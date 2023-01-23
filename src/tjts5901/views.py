@@ -20,5 +20,5 @@ def index() -> str:
 
     # Render template file. Template file is using Jinja2 syntax, and can be passed an arbitrary number
     # of arguments to be used in the template. The template file is located in the templates directory.
-    html = render_template("index.html.j2", title="TJTS5901 Example. I should be changed.")
+    html = render_template("index.html.j2", title="TJTS5901 Example. I'ts changed now.")
     return html
