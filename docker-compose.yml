@@ -31,13 +31,17 @@ services:
       FLASK_DEBUG: 1
       #FLASK_RUN_PORT: 5001
 
+    depends_on:
+      - mongodb
+
     ## Don't restart container if it exits. Useful for debugging, not for production.
     restart: 'no'
 
-  # Example for another service, such as a database.
-  # mongodb:
-  #   image: mongo:stable
-  #   restart: unless-stopped
+  mongodb:
+    image: mongo:4.2
+    ports:
+      - 27017:27017
+    restart: unless-stopped
 
 volumes:
   tjts5901-vscode-extensions:

@@ -1,12 +1,14 @@
 ## Stage names in the pipeline.
 stages:
   - build
+  - test
+  - deploy
 
 variables:
   ## Name for the generated image. Change this if you wish, but watch out
   ## for special characters and spaces!
   DOCKER_IMAGE_NAME: ${DOCKER_REGISTRY}/tjts5901
-  DOCKER_TAG: latest
+  DOCKER_TAG: ${CI_COMMIT_REF_SLUG}
 
   ## (Optional) More verbose output from pipeline. Enabling it might reveal secrets.
   #CI_DEBUG_TRACE: "true"
@@ -17,7 +19,6 @@ variables:
 ## Example gitlab-ci buildkit template: https://gitlab.com/txlab/ci-templates
 build:
   stage: build
-  environment: production
   image:
     name: moby/buildkit:v0.10.6-rootless
     entrypoint: [ "sh", "-c" ]
@@ -43,3 +44,22 @@ build:
           --local dockerfile=. \
           --opt build-arg:CI_COMMIT_SHA=${CI_COMMIT_SHA} \
           --output type=image,name=${DOCKER_IMAGE_NAME}:${DOCKER_TAG},push=true
+
+## Run the tests. If any of the tests fails, pipeline is rejected.
+test:
+  image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+  service:
+    - name: mongo:4.2  # update to reflect
+      alias: mongo
+  script:
+    - pip install .[test]
+    - pytest -v
+
+## Deploy latest image to the production
+deploy:
+  image: docker:stable
+  environment: production
+  script:
+    ## Add the `latest` tag to the image we have build.
+    - docker tag "${DOCKER_IMAGE_NAME}:${DOCKER_TAG}" "${DOCKER_IMAGE_NAME}:latest"
+    - docker push "${DOCKER_IMAGE_NAME}:latest"
