@@ -82,11 +82,11 @@
 	"remoteUser": "vscode",
 
 	"features": {
-		"docker-from-docker": "latest",
-		"kubectl-helm-minikube": {
-			"version": "1.24",
-			"minikube": "none",
-		},
+		// "docker-from-docker": "latest",
+		// "kubectl-helm-minikube": {
+		// 	"version": "1.24",
+		// 	"minikube": "none",
+		// },
 		// "terraform": "latest",
 		"azure-cli": {
 			"version": "lts"
