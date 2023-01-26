@@ -47,19 +47,29 @@ build:
 
 ## Run the tests. If any of the tests fails, pipeline is rejected.
 test:
+  environment: testing
   image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
-  service:
-    - name: mongo:4.2  # update to reflect
+  variables:
+    ## Setup variable pointin to mongo service
+    ## Notice: the `mongo` address might not work.
+    MONGO_URL: mongodb://mongo/tjts5901-test
+
+  ## When job is started, also start these things
+  services:
+    - name: mongo:4.2  # update to reflect same version used on production
       alias: mongo
   script:
-    - pip install .[test]
+    - pip install -e .[test]
     - pytest -v
 
 ## Deploy latest image to the production
 deploy:
-  image: docker:stable
   environment: production
+  image: docker:20.10.23
+  only:
+    - main
   script:
+    ## Copy credentials to container
+    - mkdir -p ${HOME}/.docker && echo "${DOCKER_AUTH_CONFIG}" > "${HOME}/.docker/config.json"
     ## Add the `latest` tag to the image we have build.
-    - docker tag "${DOCKER_IMAGE_NAME}:${DOCKER_TAG}" "${DOCKER_IMAGE_NAME}:latest"
-    - docker push "${DOCKER_IMAGE_NAME}:latest"
+    - docker buildx imagetools create ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} --tag ${DOCKER_IMAGE_NAME}:latest
