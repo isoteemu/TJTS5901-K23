@@ -19,6 +19,7 @@ from flask import (
 )
 
 from .utils import get_version
+from .logging import logger, init_logging
 
 
 def create_app(config: Optional[Dict] = None) -> Flask:
@@ -34,6 +35,8 @@ def create_app(config: Optional[Dict] = None) -> Flask:
 
     # Set flask config variable for "rich" loggin from environment variable.
     flask_app.config.from_envvar("RICH_LOGGING", silent=True)
+
+    init_logging(flask_app)
 
     # Register blueprints
     from . import views  # pylint: disable=import-outside-toplevel
@@ -66,7 +69,11 @@ def server_info() -> Response:
     running correctly.
     """
 
+    # TODO: Make this work!
+    database_ping: bool = False
+
     response = {
+        "database_connectable": database_ping,
         "version": get_version(),
         "build_date": environ.get("BUILD_DATE", None)
     }
