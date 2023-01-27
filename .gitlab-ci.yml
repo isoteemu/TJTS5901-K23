@@ -47,6 +47,7 @@ build:
 
 ## Run the tests. If any of the tests fails, pipeline is rejected.
 test:
+  stage: test
   environment: testing
   image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
   variables:
@@ -64,6 +65,7 @@ test:
 
 ## Deploy latest image to the production
 deploy:
+  stage: deploy
   environment: production
   image: docker:20.10.23
   only:
