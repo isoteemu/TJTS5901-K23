@@ -1,12 +1,14 @@
 ## Stage names in the pipeline.
 stages:
   - build
+  - test
+  - deploy
 
 variables:
   ## Name for the generated image. Change this if you wish, but watch out
   ## for special characters and spaces!
   DOCKER_IMAGE_NAME: ${DOCKER_REGISTRY}/tjts5901
-  DOCKER_TAG: latest
+  DOCKER_TAG: ${CI_COMMIT_REF_SLUG}
 
   ## (Optional) More verbose output from pipeline. Enabling it might reveal secrets.
   #CI_DEBUG_TRACE: "true"
@@ -17,7 +19,6 @@ variables:
 ## Example gitlab-ci buildkit template: https://gitlab.com/txlab/ci-templates
 build:
   stage: build
-  environment: production
   image:
     name: moby/buildkit:v0.10.6-rootless
     entrypoint: [ "sh", "-c" ]
@@ -43,3 +44,34 @@ build:
           --local dockerfile=. \
           --opt build-arg:CI_COMMIT_SHA=${CI_COMMIT_SHA} \
           --output type=image,name=${DOCKER_IMAGE_NAME}:${DOCKER_TAG},push=true
+
+## Run the tests. If any of the tests fails, pipeline is rejected.
+test:
+  stage: test
+  environment: testing
+  image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+  variables:
+    ## Setup variable pointin to mongo service
+    ## Notice: the `mongo` address might not work.
+    MONGO_URL: mongodb://mongo/tjts5901-test
+
+  ## When job is started, also start these things
+  services:
+    - name: mongo:4.2  # update to reflect same version used on production
+      alias: mongo
+  script:
+    - pip install -e .[test]
+    - pytest -v
+
+## Deploy latest image to the production
+deploy:
+  stage: deploy
+  environment: production
+  image: docker:20.10.23
+  only:
+    - main
+  script:
+    ## Copy credentials to container
+    - mkdir -p ${HOME}/.docker && echo "${DOCKER_AUTH_CONFIG}" > "${HOME}/.docker/config.json"
+    ## Add the `latest` tag to the image we have build.
+    - docker buildx imagetools create ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} --tag ${DOCKER_IMAGE_NAME}:latest
