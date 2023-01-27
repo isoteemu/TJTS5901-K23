@@ -1,12 +1,13 @@
 # TJTS5901 Course Template Project
 
-This is the template for 2023 TJTS5901 Continuous Software Engineering -course.
+Project template for 2023 TJTS5901 Continuous Software Engineering -course.
 
 - Sisu: <https://sisu.jyu.fi/student/courseunit/otm-38b7f26b-1cf9-4d2d-a29b-e1dcb5c87f00>
 - Moodle: <https://moodle.jyu.fi/course/view.php?id=20888>
 
-
 To get started with the project, see [`week_1.md`](./week_1.md)
+
+The application is deployed at <https://tjts5901-app.azurewebsites.net>
 
 ## Start the app
 
