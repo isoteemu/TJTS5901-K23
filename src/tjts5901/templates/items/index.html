@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Items{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="#">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<table class="table">
+    <thead class="thead-light">
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Starting Bid</th>
+        <th>Seller</th>
+        <th>Created At</th>
+        <th>Closed At</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>
+            {{ item.title }}
+            {% if g.user == item.seller %}
+                <a class="action btn btn-primary" href="{{ url_for('item.update', id=item['id']) }}">Edit</a>
+            {% endif %}
+        </td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.starting_bid }}</td>
+        <td>{{ item.seller.email }}</td>
+        <td>{{ item.created_at }}</td>
+        <td>{{ item.closed_at }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
