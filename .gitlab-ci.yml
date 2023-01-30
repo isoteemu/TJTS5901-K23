@@ -1,12 +1,14 @@
 ## Stage names in the pipeline.
 stages:
   - build
+  - test
+  - deploy
 
 variables:
   ## Name for the generated image. Change this if you wish, but watch out
   ## for special characters and spaces!
   DOCKER_IMAGE_NAME: ${DOCKER_REGISTRY}/tjts5901
-  DOCKER_TAG: latest
+  DOCKER_TAG: $CI_COMMIT_REF_SLUG
 
   ## (Optional) More verbose output from pipeline. Enabling it might reveal secrets.
   #CI_DEBUG_TRACE: "true"
@@ -43,3 +45,25 @@ build:
           --local dockerfile=. \
           --opt build-arg:CI_COMMIT_SHA=${CI_COMMIT_SHA} \
           --output type=image,name=${DOCKER_IMAGE_NAME}:${DOCKER_TAG},push=true
+
+test:
+    ## Optional: include stage and environment name
+    stage: test
+
+    image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+    script:
+      - pip install  --disable-pip-version-check -e .[test]
+      - pytest -v
+      - echo "Test run succesfully!"
+
+deploy:
+  stage: deploy
+  environment: production
+  image: docker:20.10.23
+  only:
+    - main
+  script:
+    ## Copy credentials to container
+    - mkdir -p ${HOME}/.docker && echo "${DOCKER_AUTH_CONFIG}" > "${HOME}/.docker/config.json"
+    ## Add the `latest` tag to the image we have build.
+    - docker buildx imagetools create ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} --tag ${DOCKER_IMAGE_NAME}:latest
