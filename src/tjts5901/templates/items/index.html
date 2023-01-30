@@ -1,14 +1,27 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Items{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="#">New</a>
-  {% endif %}
+<style>
+#header-img {
+    background-image: url("{{url_for('static', filename='img/city.png')}}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 12em;
+    color: var(--orange);
+}
+
+#header-img h1 {
+  background-color: rgba(33, 33, 33, 0.8);
+}
+</style>
+<div id="header-img" class="d-flex container-flex align-items-center justify-content-center">
+  <h1>{% block title %}Items on sale{% endblock %}</h1>
+</div>
 {% endblock %}
 
 {% block content %}
-
 <div class="container">
   <div class="row">
     <div class="col-md-12">

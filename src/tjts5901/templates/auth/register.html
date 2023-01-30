@@ -5,6 +5,16 @@
 {% endblock %}
 
 {% block content %}
+<style>
+.login-dialog-img {
+    background-image: url("https://openai-labs-public-images-prod.azureedge.net/user-eKykIYWOdPMyg5hmQc750Q6a/generations/generation-nFKGWPKYsJ3r1eJBLrHatf4I/image.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 8em;
+}
+</style>
 <section class="min-vh-100 d-flex align-items-center bg-secondary">
   <div class="container">
     <div class="row justify-content-center">
@@ -13,6 +23,7 @@
           <div class="card-header text-center">
             <span>Register on our platform</span>
           </div>
+          <div class="login-dialog-img"></div>
           <div class="card-body">
             <form action="{{ url_for('auth.register') }}" method="POST" class="mt-4">
 
