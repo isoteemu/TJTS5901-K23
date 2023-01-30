@@ -26,7 +26,7 @@
         <td>
             {{ item.title }}
             {% if g.user == item.seller %}
-                <a class="action btn btn-primary" href="{{ url_for('item.update', id=item['id']) }}">Edit</a>
+                <a class="action btn btn-primary" href="{{ url_for('items.update', id=item['id']) }}">Edit</a>
             {% endif %}
         </td>
         <td>{{ item.description }}</td>

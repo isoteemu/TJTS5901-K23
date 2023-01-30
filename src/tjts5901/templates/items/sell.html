@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Sell an Item{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card p-4">
+                <h3 class="text-center mb-4">Add Item</h3>
+                <form method="post" action="{{ url_for('items.sell') }}">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" id="title" class="form-control" value="{{ request.form['title'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea name="description" id="description" class="form-control">{{ request.form['body'] }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="starting_bid">Starting Bid</label>
+                        <input type="number" name="starting_bid" id="starting_bid" min="0" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block">Add to listing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

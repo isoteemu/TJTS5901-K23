@@ -36,4 +36,4 @@ class Item(db.Document):
     seller = ReferenceField(User, required=True)
 
     created_at = DateTimeField(required=True, default=datetime.utcnow)
-    closed_at = DateTimeField()
+    closes_at = DateTimeField()
