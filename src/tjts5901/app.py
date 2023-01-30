@@ -52,6 +52,9 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     def hello():
         return 'Hello, World!'
 
+    # Initialize the database connection.
+    init_db(flask_app)
+
     # Register blueprints
     from . import views  # pylint: disable=import-outside-toplevel
     flask_app.register_blueprint(views.bp, url_prefix='')
