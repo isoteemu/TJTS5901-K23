@@ -35,7 +35,7 @@
           <ul>
             {% if g.user %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><span>{{ g.user['username'] }}</span></a>
+                    <a class="nav-link" href="#"><span>{{ g.user['email'] }}</span></a>
                     <a class="nav-link" href="#"><a href="{{ url_for('auth.logout') }}">Log Out</a></a>
                 </li>
             {% else %}
