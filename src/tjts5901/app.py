@@ -47,13 +47,13 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     except OSError:
         pass
 
+    # Initialize the database connection.
+    init_db(flask_app)
+
     # a simple page that says hello
     @flask_app.route('/hello')
     def hello():
         return 'Hello, World!'
-
-    # Initialize the database connection.
-    init_db(flask_app)
 
     # Register blueprints
     from . import views  # pylint: disable=import-outside-toplevel
