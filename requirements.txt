@@ -5,6 +5,8 @@ importlib-metadata
 flask
 python-dotenv
 
+flask-mongoengine==1.0.
+
 # Git hooks
 pre-commit
 
