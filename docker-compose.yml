@@ -34,10 +34,16 @@ services:
     ## Don't restart container if it exits. Useful for debugging, not for production.
     restart: 'no'
 
-  # Example for another service, such as a database.
-  # mongodb:
-  #   image: mongo:stable
-  #   restart: unless-stopped
+    ## Start a mongodb container and link it to the app container
+    depends_on:
+      - mongodb
+
+  # MongoDB container
+  mongodb:
+    image: mongo:4.2
+    restart: unless-stopped
+    ports:
+      - 27017:27017
 
 volumes:
   tjts5901-vscode-extensions:
