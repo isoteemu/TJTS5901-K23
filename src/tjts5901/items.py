@@ -22,12 +22,26 @@ def get_item(id):
     
     abort(403)
 
-@bp.route('/')
-def index():
-    items = Item.objects.all()
+@bp.route("/", defaults={'page': 1})
+@bp.route("/items/<int:page>")
+def index(page=1):
+    """
+    Index page for items on sale.
+
+    Lists only items that are currently sale, with pagination.
+    """
+
+    # Function used on propaedeutic
+    # items = Item.objects.all()
+
+    # Fetch items that are on sale currently, and paginate
+    # See: http://docs.mongoengine.org/projects/flask-mongoengine/en/latest/custom_queryset.html
+    items = Item.objects.filter(closes_at__gt=datetime.utcnow()) \
+        .order_by('-closes_at') \
+        .paginate(page=page, per_page=10)
+
     return render_template('items/index.html',
-        items=items
-    )
+                           items=items)
 
 
 @bp.route('/sell', methods=('GET', 'POST'))
