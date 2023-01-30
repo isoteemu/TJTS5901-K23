@@ -12,60 +12,59 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='windows-95-ui-kit/css/w95.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
-  <body>
+  <body class="bg-secondary">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="#">Navbar</a>
-      
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="{{ url_for('items.sell') }}">Sell</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled">Disabled</a>
-            </li>
-          </ul>
-          <ul>
-            {% if g.user %}
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><span>{{ g.user['email'] }}</span></a>
-                    <a class="nav-link" href="#"><a href="{{ url_for('auth.logout') }}">Log Out</a></a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a href="{{ url_for('auth.register') }}">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('auth.login') }}">Log In</a>
-                </li>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">{{config['BRAND']}}</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('items.index') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('items.sell') }}">Sell</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          {% if g.user %}
+          <li class="nav-item"><span>{{ g.user['username'] }}</span></li>
+          <li class="nav-item"><a href="{{ url_for('auth.logout') }} class=" nav-link">Log Out</a></li>
+          {% else %}
+          <li class="nav-item"><a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
+          <li class="nav-item"><a href="{{ url_for('auth.login') }}" class="nav-link">Log In</a>
             {% endif %}
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
+        </ul>
+        <form class="form-inline">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
 
       <header>
         {% block header %}
             <h1>{{ config['BRAND'] }}</h1>
         {% endblock %}
       </header>
-      {% for message in get_flashed_messages() %}
-        <div class="flash alert alert-primary">{{ message }}</div>
-      {% endfor %}
+      <main class="content">
+        {% for message in get_flashed_messages() %}
+          <div class="container">
+            <div class="flash alert alert-primary">{{ message }}</div>
+          </div>
+        {% endfor %}
 
-      {% block content %}
-        <!-- MAIN CONTENT BLOCK MISSING -->
-      {% endblock %}
+        {% block content %}
+          <!-- MAIN CONTENT BLOCK MISSING -->
+        {% endblock %}
+      </main>
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
