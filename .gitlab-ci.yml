@@ -50,15 +50,15 @@ test:
   ## Optional: include stage and environment name
   stage: test
   image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
-  #variables:
-  #  ## Setup variable pointin to mongo service
-  #  ## Notice: the `mongo` address might not work.
-  #  MONGO_URL: mongodb://mongo/tjts5901-test
+  variables:
+    ## Setup variable pointin to mongo service
+    ## Notice: the `mongo` address might not work.
+    MONGO_URL: mongodb://mongo/tjts5901-test
 
   ## When job is started, also start these things
-  #services:
-  #  - name: mongo:4.2  # update to reflect same version used on production
-  #    alias: mongo
+  services:
+    - name: mongo:4.2  # update to reflect same version used on production
+      alias: mongo
   script:
       - pip install  --disable-pip-version-check -e .[test]
       - pytest -v
