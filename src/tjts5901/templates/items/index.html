@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<style>
+#header-img {
+    background-image: url("{{url_for('static', filename='img/city.png')}}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 12em;
+    color: var(--orange);
+}
+
+#header-img h1 {
+  background-color: rgba(33, 33, 33, 0.8);
+}
+</style>
+<div id="header-img" class="d-flex container-flex align-items-center justify-content-center">
+  <h1>{% block title %}Items on sale{% endblock %}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Starting Bid</th>
+              <th>Seller</th>
+              <th>Created At</th>
+              <th>Closes At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items.items %}
+            <tr>
+              <td>
+                  {{ item.title }}
+                  {% if g.user == item.seller %}
+                      <a class="action btn btn-primary" href="{{ url_for('items.update', id=item['id']) }}">Edit</a>
+                  {% endif %}
+              </td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.starting_bid }}</td>
+              <td>{{ item.seller.email }}</td>
+              <td>{{ item.created_at }}</td>
+              <td>{{ item.closes_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            {% for page in items.iter_pages() %}
+            <li class="page-item {% if page == items.page %}active{% endif %}">
+              <a class="page-link" href="{{ url_for('items.index', page=page) }}">{{ page }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}

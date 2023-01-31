@@ -15,7 +15,7 @@ def app():
     >>> def test_mytest(app: Flask):
     >>>     ...
     """
-    _app = create_app({
+    flask_app = create_app({
         'TESTING': True,
         'DEBUG': False,
 
@@ -30,30 +30,18 @@ def app():
     # CSRF tokens. We can disable CSRF protection for testing, but we need
     # to make sure that we don't have CSRF protection enabled in production.
 
-    # _app.config['WTF_CSRF_ENABLED'] = False
-    # _app.config['WTF_CSRF_METHODS'] = []
-    # _app.config['WTF_CSRF_CHECK_DEFAULT'] = False
+    # flask_app.config['WTF_CSRF_ENABLED'] = False
+    # flask_app.config['WTF_CSRF_METHODS'] = []
+    # flask_app.config['WTF_CSRF_CHECK_DEFAULT'] = False
 
-    _app.testing = True
-    yield _app
+    flask_app.testing = True
+    yield flask_app
 
     # Do some cleanup here if needed.
     ...
 
 
 @pytest.fixture
-def client(app: Flask):
-    """
-    Setup testing client.
-
-    See:
-    https://flask.palletsprojects.com/en/2.2.x/testing/#the-testing-skeleton
-    https://werkzeug.palletsprojects.com/en/2.2.x/test/#werkzeug.test.Client
-    """
-
-    # Setup all the context needed for client to work.
-    with app.test_client() as test_client:
-        with app.app_context():
-            yield test_client
-
+def client(app):
+    return app.test_client()
 

@@ -47,21 +47,22 @@ build:
 
 ## Run the tests. If any of the tests fails, pipeline is rejected.
 test:
+  ## Optional: include stage and environment name
   stage: test
-  environment: testing
   image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
-  variables:
-    ## Setup variable pointin to mongo service
-    ## Notice: the `mongo` address might not work.
-    MONGO_URL: mongodb://mongo/tjts5901-test
+  #variables:
+  #  ## Setup variable pointin to mongo service
+  #  ## Notice: the `mongo` address might not work.
+  #  MONGO_URL: mongodb://mongo/tjts5901-test
 
   ## When job is started, also start these things
-  services:
-    - name: mongo:4.2  # update to reflect same version used on production
-      alias: mongo
+  #services:
+  #  - name: mongo:4.2  # update to reflect same version used on production
+  #    alias: mongo
   script:
-    - pip install -e .[test]
-    - pytest -v
+      - pip install  --disable-pip-version-check -e .[test]
+      - pytest -v
+      - echo "Test run succesfully!"
 
 ## Deploy latest image to the production
 deploy:

@@ -28,6 +28,7 @@ dependencies = {file = ["requirements.txt"]}
 [project.optional-dependencies]
 test = [
   "pytest",
+  "coverage",
 ]
 docs = [
   "mkdocs",

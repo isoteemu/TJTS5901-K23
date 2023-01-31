@@ -20,3 +20,6 @@ FLASK_DEBUG=1
 # Enable rich logging for more human readable log output. Requires installing
 # `rich` and `flask-rich` packages.
 #RICH_LOGGING=1
+
+# Mongodb connection string
+MONGO_URL=mongodb://mongodb:27017/tjts5901
