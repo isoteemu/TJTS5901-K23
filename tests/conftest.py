@@ -20,7 +20,7 @@ def app():
         'DEBUG': False,
 
         # We need to set SERVER_NAME and PREFERRED_URL_SCHEME for testing.
-        'SERVER_NAME': 'localhost',
+        'SERVER_NAME': 'localhost.localdomain',
         'PREFERRED_URL_SCHEME': 'http',
     })
 

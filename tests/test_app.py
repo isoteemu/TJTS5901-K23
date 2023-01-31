@@ -5,11 +5,12 @@ Flask based tests
 Uses the flask testclient to retrieve and post pages in application.
 """
 
+import pytest
 from flask.testing import FlaskClient
 
-# This is the string we are looking for in the frontpage.
-IN_TITLE = "TJTS5901"
 
+# This is the string we are looking for in the frontpage.
+IN_TITLE = "DMC"
 
 def test_fetch_mainpage(client: FlaskClient):
     """
