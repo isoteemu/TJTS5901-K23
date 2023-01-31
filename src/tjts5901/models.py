@@ -28,6 +28,13 @@ class Item(db.Document):
     A model for items that are listed on the auction site.
     """
 
+    # Create index for sorting items by closing date
+    meta = {"indexes": [
+        {"fields": [
+            "closes_at",
+        ]}
+    ]}
+
     title = StringField(max_length=100, required=True)
     description = StringField(max_length=2000, required=True)
 
