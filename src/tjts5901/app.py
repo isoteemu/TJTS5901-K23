@@ -7,8 +7,6 @@ Flask tutorial: https://flask.palletsprojects.com/en/2.2.x/tutorial/
 
 """
 
-import logging
-
 from os import environ
 import os
 from typing import Dict, Literal, Optional
@@ -67,9 +65,6 @@ def create_app(config: Optional[Dict] = None) -> Flask:
 
     return flask_app
 
-
-logger = logging.getLogger(__name__)
-logger.info("Logger ready!")
 
 # Load environment variables from .env file, if present. See the `dotenv` file for a
 # template and how to use it.
