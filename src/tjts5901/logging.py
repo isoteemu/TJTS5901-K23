@@ -27,6 +27,7 @@ from flask.logging import default_handler as flask_handler
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.pymongo import PyMongoIntegration
 
+from .utils import get_version
 
 def init_logging(app: Flask):
     """
@@ -59,25 +60,26 @@ def init_logging(app: Flask):
 
     logger.debug("TJTS5901 Logger initialised.")
 
-    # Populate config with environment variables for sentry logging
-    app.config.setdefault('SENTRY_DSN', environ.get('SENTRY_DSN'))
-    app.config.setdefault('CI_COMMIT_SHA', environ.get('CI_COMMIT_SHA'))
-    app.config.setdefault('CI_ENVIRONMENT_NAME', environ.get('CI_ENVIRONMENT_NAME'))
-
-    # Setup sentry logging
-    sentry_dsn = app.config.get("SENTRY_DSN")
-    release = app.config.get("CI_COMMIT_SHA")
-
     # Try to get enviroment name from different sources
-    if enviroment := app.config.get("CI_ENVIRONMENT_NAME"):
+    if enviroment := environ.get('CI_ENVIRONMENT_NAME'):
         enviroment = enviroment.lower()
     elif app.testing:
         enviroment = "testing"
     elif app.debug:
         enviroment = "development"
 
+    # Populate config with environment variables for sentry logging
+    app.config.setdefault('SENTRY_DSN', environ.get('SENTRY_DSN'))
+    app.config.setdefault('SENTRY_ENVIRONMENT', enviroment)
+    app.config.setdefault('CI_COMMIT_SHA', environ.get('CI_COMMIT_SHA'))
+
+    # Setup sentry logging
+    sentry_dsn = app.config.get("SENTRY_DSN")
+    release = app.config.get("CI_COMMIT_SHA", get_version() or "dev")
+    enviroment = app.config.get("CI_ENVIRONMENT_NAME")
+
     if sentry_dsn:
-        sentry_sdk.init(
+        sentry = sentry_sdk.init(
             dsn=sentry_dsn,
             integrations=[
                 # Flask integration
@@ -106,5 +108,9 @@ def init_logging(app: Flask):
             release=release,
             environment=enviroment,
         )
+
+        app.config.setdefault("SENTRY_RELEASE", sentry._client.options["release"])
+        logger.info("Sentry logging enabled.", extra={"SENTRY_DSN": sentry_dsn})
+
     else:
         logger.warning("Sentry DSN not found. Sentry logging disabled.")
