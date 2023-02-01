@@ -4,6 +4,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
+from sentry_sdk import set_user
 
 from .models import User
 
@@ -21,8 +22,11 @@ def load_logged_in_user():
 
     if user_id is None:
         g.user = None
+        set_user(None)
+
     else:
         g.user = User.objects.get(id=user_id)
+        set_user({"id": str(g.user.id), "email": g.user.email})
 
 
 def login_required(view):
