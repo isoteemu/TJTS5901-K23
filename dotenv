@@ -23,3 +23,9 @@ FLASK_DEBUG=1
 
 # Mongodb connection string
 MONGO_URL=mongodb://mongodb:27017/tjts5901
+
+# Sentry logging. Fetch the DSN ingest key: <https://docs.sentry.io/platforms/python/guides/flask/>
+#SENTRY_DSN=https://ABC@XYZ.ingest.sentry.io/123
+# Setup sentry environment to separate development issues from production. This variable name is
+# maybe set by gitlab pipeline. <https://docs.gitlab.com/ee/ci/environments/>
+CI_ENVIRONMENT_NAME=development
