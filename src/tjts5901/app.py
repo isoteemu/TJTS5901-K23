@@ -42,6 +42,10 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     else:
         flask_app.config.from_mapping(config)
 
+    # Initialize logging early, so that we can log the rest of the initialization.
+    from .logging import init_logging  # pylint: disable=import-outside-toplevel
+    init_logging(flask_app)
+
     # ensure the instance folder exists
     try:
         os.makedirs(flask_app.instance_path)

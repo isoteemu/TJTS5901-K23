@@ -10,5 +10,9 @@ flask-mongoengine==1.0
 # Git hooks
 pre-commit
 
+# Sentry for error reporting
+sentry-sdk[flask]
+sentry-sdk[mongoengine]
+
 # More production-ready web server
 #gunicorn
