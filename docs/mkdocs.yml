@@ -23,7 +23,7 @@ theme:
 
   logo: https://gitlab.jyu.fi/uploads/-/system/appearance/header_logo/1/jyu-logo3.png
   icon:
-    repo: fontawesome/brands/gitlab
+    repo: material/file-document
 
 extra_css:
   - jyu-stylesheet.css
