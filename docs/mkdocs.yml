@@ -7,6 +7,7 @@
 
 site_name: JYU TJTS5901 Course Documentation
 site_author: University of Jyväskylä / StartupLab
+copyright: © Copyright 2023 - <a href="https://www.jyu.fi">University of Jyväskylä</a> - This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a>.
 
 theme: 
   name: material
@@ -69,4 +70,6 @@ extra:
       link: https://sisu.jyu.fi/student/courseunit/otm-38b7f26b-1cf9-4d2d-a29b-e1dcb5c87f00
       text: Sisu
     - icon: fontawesome/brands/discord
-      link: http://discord.com
+      link: https://discord.gg/QfbAjzxJYd
+    - icon: simple/zoom
+      link: https://jyufi.zoom.us/j/64685455360
