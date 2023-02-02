@@ -55,6 +55,10 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     # Initialize the database connection.
     init_db(flask_app)
 
+    @flask_app.route('/debug-sentry')
+    def trigger_error():
+        division_by_zero = 1 / 0
+
     # a simple page that says hello
     @flask_app.route('/hello')
     def hello():
