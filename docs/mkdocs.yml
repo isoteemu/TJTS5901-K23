@@ -51,12 +51,22 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.magiclink:
+      user: startuplab/courses/tjts5901-continuous-software-engineering
+      repo: TJTS5901-K23_template
+      provider: gitlab
+
+      repo_url_shortener: true
+      repo_url_shorthand: true
+
 plugins:
   - offline
   - search
   - git-revision-date-localized:
       type: date
       fallback_to_build_date: true
+  - macros:
+      module_name: macros
 
 extra:
   social:

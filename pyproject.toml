@@ -34,6 +34,7 @@ docs = [
   "mkdocs",
   "mkdocs-material",
   "mkdocs-git-revision-date-localized-plugin",
+  "mkdocs-macros-plugin",
 ]
 
 [build-system]
