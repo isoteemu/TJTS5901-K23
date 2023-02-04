@@ -12,7 +12,7 @@ pre-commit
 
 # Sentry for error reporting
 sentry-sdk[flask]
-sentry-sdk[mongoengine]
+sentry-sdk[pymongo]
 
 # More production-ready web server
 #gunicorn
