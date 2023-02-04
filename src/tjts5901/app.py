@@ -7,6 +7,7 @@ Flask tutorial: https://flask.palletsprojects.com/en/2.2.x/tutorial/
 
 """
 
+import logging
 from os import environ
 import os
 from typing import Dict, Literal, Optional
@@ -21,6 +22,8 @@ from flask import (
 
 from .utils import get_version
 from .db import init_db
+
+logger = logging.getLogger(__name__)
 
 
 def create_app(config: Optional[Dict] = None) -> Flask:
@@ -91,8 +94,16 @@ def server_info() -> Response:
     running correctly.
     """
 
-    # TODO: Make this work!
-    database_ping: bool = False
+    
+    # Test for database connection
+    database_ping = False
+    try:
+        from .db import db  # pylint: disable=import-outside-toplevel
+        database_ping = db.connection.admin.command('ping').get("ok", False) and True
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.warning("Error querying mongodb server: %r", exc,
+                       exc_info=True,
+                       extra=flask_app.config.get_namespace("MONGODB"))
 
     response = {
         "database_connectable": database_ping,
