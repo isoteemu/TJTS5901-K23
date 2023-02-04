@@ -4,6 +4,7 @@ importlib-metadata
 # Framework and libraries
 flask==2.2.2
 python-dotenv
+flask-babel
 
 flask-mongoengine==1.0
 
