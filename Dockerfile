@@ -15,6 +15,14 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:3.10-bullseye
 ## Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+## Make container more secure by using Finnish locale
+ENV LANG=fi_FI.UTF-8
+ENV LC_ALL=${LANG}
+
+RUN echo "${LANG} UTF-8" >> /etc/locale.gen && \
+    locale-gen && \
+    dpkg-reconfigure --frontend=noninteractive locales
+
 ## Set static working directory. By default, it is set to /workspaces/<project-name> by
 ## vscode.
 WORKDIR /app
