@@ -45,27 +45,27 @@
       <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('items.index') }}">Home</a>
+            <a class="nav-link" href="{{ url_for('items.index') }}">{{_("Home")}}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('items.sell') }}">Sell</a>
+            <a class="nav-link" href="{{ url_for('items.sell') }}">{{_("Sell")}}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-link" href="#">{{_("About")}}</a>
           </li>
         </ul>
         <ul class="navbar-nav">
           {% if g.user %}
           <li class="nav-item"><span>{{ g.user['username'] }}</span></li>
-          <li class="nav-item"><a href="{{ url_for('auth.logout') }}" class="nav-link">Log Out</a></li>
+          <li class="nav-item"><a href="{{ url_for('auth.logout') }}" class="nav-link">{{_("Log Out")}}</a></li>
           {% else %}
-          <li class="nav-item"><a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
-          <li class="nav-item"><a href="{{ url_for('auth.login') }}" class="nav-link">Log In</a>
+          <li class="nav-item"><a href="{{ url_for('auth.register') }}" class="nav-link">{{_("Register")}}</a>
+          <li class="nav-item"><a href="{{ url_for('auth.login') }}" class="nav-link">{{_("Log In")}}</a>
             {% endif %}
         </ul>
         <form class="form-inline">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+          <button class="btn btn-outline-info my-2 my-sm-0" type="submit">{{_("Search")}}</button>
         </form>
       </div>
     </nav>

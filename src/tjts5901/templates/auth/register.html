@@ -21,25 +21,25 @@
       <div class="col-12 d-flex align-items-center justify-content-center">
         <div class="card card-tertiary w-100 fmxw-400">
           <div class="card-header text-center">
-            <span>Register on our platform</span>
+            <span>{{ _("Register on our platform") }}</span>
           </div>
           <div class="login-dialog-img"></div>
           <div class="card-body">
             <form action="{{ url_for('auth.register') }}" method="POST" class="mt-4">
 
               <div class="form-group">
-                <label for="email" class="mb-2">Email</label>
+                <label for="email" class="mb-2">{{ _("Email") }}</label>
                 <input name="email" id="email" type="email" class="form-control" placeholder="Your email" required="">
               </div>
 
               <div class="form-group">
 
                 <div class="form-group">
-                  <label for="password" class="mb-2">Password</label>
+                  <label for="password" class="mb-2">{{ _("Password") }}</label>
                   <input name="password" id="password" type="password" class="form-control" placeholder="Your password" required="">
                 </div>
                 <div class="form-group">
-                  <label for="confirmPassword" class="mb-2">Confirm password</label>
+                  <label for="confirmPassword" class="mb-2">{{ _("Confirm password") }}</label>
                   <input name="password2" id="confirmPassword" type="password" class="form-control" placeholder="Confirm password"
                     required="">
                 </div>
@@ -50,17 +50,17 @@
                       <input name="terms" class="form-check-input" type="checkbox">
                       <span class="form-check-x"></span>
                       <span class="form-check-sign"></span>
-                      I agree to the <a href="#">terms and conditions</a>
+                      {{ _("I agree to the %(terms)s", terms="<a href=\"#\">"|safe+_("terms and conditions")+"</a>"|safe) }}.
                     </label>
                   </div>
                 </div>
               </div>
-              <button type="submit" class="btn btn-block btn-primary">Register account</button>
+              <button type="submit" class="btn btn-block btn-primary">{{ _("Register account") }}</button>
             </form>
             <div class="d-block d-sm-flex justify-content-center align-items-center mt-4">
               <p class="font-weight-normal">
-                Already have an account?
-                <a href="./login.html" class="font-weight-bold">Login here</a>
+                {{ _("Already have an account?") }}
+                <a href="./login.html" class="font-weight-bold">{{ _("Login here") }}</a>
               </p>
             </div>
           </div>
