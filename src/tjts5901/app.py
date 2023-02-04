@@ -94,7 +94,6 @@ def server_info() -> Response:
     running correctly.
     """
 
-    
     # Test for database connection
     database_ping = False
     try:
@@ -105,8 +104,19 @@ def server_info() -> Response:
                        exc_info=True,
                        extra=flask_app.config.get_namespace("MONGODB"))
 
+    # Check for sentry
+    sentry_available = False
+    try:
+        from sentry_sdk import Hub
+        sentry_available = True if Hub.current.client else False
+    except ImportError:
+        logger.warning("Sentry package is not installed")
+    except TypeError:
+        logger.info("Sentry is not integrated")
+
     response = {
         "database_connectable": database_ping,
+        'sentry_available': sentry_available,
         "version": get_version(),
         "build_date": environ.get("BUILD_DATE", None)
     }
