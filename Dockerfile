@@ -53,6 +53,9 @@ COPY . .
 ## to remove `COPY` and only install app as a package.
 RUN pip --disable-pip-version-check install -v -e .
 
+## Create translation files
+RUN pybabel compile -f -d src/tjts5901/translations/
+
 ## If defined, copy commit id to app environment. This is used to identify
 ## which version of the app is running.
 ARG CI_COMMIT_SHA
