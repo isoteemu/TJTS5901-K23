@@ -22,6 +22,7 @@ from flask import (
 
 from .utils import get_version
 from .db import init_db
+from .i18n import init_babel
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,9 @@ def create_app(config: Optional[Dict] = None) -> Flask:
         os.makedirs(flask_app.instance_path)
     except OSError:
         pass
+
+    # Initialize the Flask-Babel extension.
+    init_babel(flask_app)
 
     # Initialize the database connection.
     init_db(flask_app)
