@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from .db import db
 
 from mongoengine import (
@@ -8,10 +9,13 @@ from mongoengine import (
     DateTimeField,
     EmailField,
     BooleanField,
+    EnumField,
 )
 
 from flask_login import UserMixin
 from bson import ObjectId
+
+from .i18n import SupportedLocales
 
 
 class User(UserMixin, db.Document):
@@ -24,6 +28,8 @@ class User(UserMixin, db.Document):
     "The user's email address."
 
     password = StringField(required=True)
+
+    locale = EnumField(SupportedLocales)
 
     created_at = DateTimeField(required=True, default=datetime.utcnow)
 
@@ -45,6 +51,7 @@ class User(UserMixin, db.Document):
         Return the user's id as a string.
         """
         return str(self.id)
+
 
 
 class Item(db.Document):
