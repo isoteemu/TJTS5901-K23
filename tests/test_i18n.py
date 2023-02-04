@@ -10,6 +10,8 @@ from flask import Flask
 from flask_babel import (
     Babel,
     Locale,
+    force_locale,
+    gettext,
 )
 
 from tjts5901.i18n import SupportedLocales
@@ -45,3 +47,53 @@ def test_for_supported_locales(app: Flask, babel: Babel):
                 continue
 
             assert required in languages, f"Missing translation for language {required.language}"
+
+
+def test_babel_translations(app: Flask, babel: Babel):
+    """
+    Test that translations exists for test string "Hello, world!". This test
+    will fail if the translation is missing for any language.
+
+    This test is not intended to test the translation itself, but rather to
+    ensure that the translation exists.
+
+    And if the actual translation for "Hello, world!" is "Hello, world!", then
+    the test needs to be updated to use a different test string.
+    """
+
+    # For flask_babel to work, we need to run in app context
+    with app.app_context():
+
+        # Iterate through all of the languages available.
+        languages: List[Locale] = babel.list_translations()
+        for locale in languages:
+            if locale.language == "en":
+                # By default everything should be in english
+                continue
+
+            with force_locale(locale):
+                assert gettext("Hello, World!") != "Hello, World!", f"Message is not translated for language {locale.language}"
+
+
+def test_app_language_detection(client, babel):
+    """
+    Similar to :func:`test_babel_translations`, but uses e2e test client
+    to test translations.
+
+    Uses the Accept-Language header to set the language for the request.
+
+    TODO: Write variation that includes the territory code in the Accept-Language header.
+    """
+
+    # Iterate through all of the languages available.
+    with client.application.app_context():
+        languages: List[Locale] = babel.list_translations()
+
+    for locale in languages:
+        if locale.language == "en":
+            # By default everything should be in english
+            continue
+
+        response = client.get('/hello', headers={'Accept-Language': locale.language})
+        resp_as_string = response.data.decode('utf-8')
+        assert gettext("Hello, World!") != resp_as_string, f"Message is not translated for language {locale.language}"
