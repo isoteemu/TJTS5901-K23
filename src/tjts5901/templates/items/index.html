@@ -17,7 +17,7 @@
 }
 </style>
 <div id="header-img" class="d-flex container-flex align-items-center justify-content-center">
-  <h1>{% block title %}Items on sale{% endblock %}</h1>
+  <h1>{% block title %}{{_("Items on sale")}}{% endblock %}</h1>
 </div>
 {% endblock %}
 
@@ -28,12 +28,12 @@
       <table class="table">
           <thead class="thead-light">
             <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Starting Bid</th>
-              <th>Seller</th>
-              <th>Created At</th>
-              <th>Closes At</th>
+              <th>{{ _("Title") }}</th>
+              <th>{{ _("Description") }}</th>
+              <th>{{ _("Starting Bid") }}</th>
+              <th>{{ _("Seller") }}</th>
+              <th>{{ _("Created At") }}</th>
+              <th>{{ _("Closes At") }}</th>
             </tr>
           </thead>
           <tbody>

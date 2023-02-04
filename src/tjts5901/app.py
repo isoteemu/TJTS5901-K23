@@ -20,6 +20,8 @@ from flask import (
     request,
 )
 
+from flask_babel import _
+
 from .utils import get_version
 from .db import init_db
 from .i18n import init_babel
@@ -37,7 +39,7 @@ def create_app(config: Optional[Dict] = None) -> Flask:
 
     flask_app.config.from_mapping(
         SECRET_KEY='dev',
-        BRAND="Hill Valley DMC dealership",
+        BRAND=_("Hill Valley DMC dealership"),
     )
 
     # load the instance config, if it exists, when not testing
@@ -69,7 +71,7 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     # a simple page that says hello
     @flask_app.route('/hello')
     def hello():
-        return 'Hello, World!'
+        return _('Hello, World!')
 
     from .auth import init_auth
     init_auth(flask_app)
