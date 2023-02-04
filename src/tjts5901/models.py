@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from .db import db
 
 from mongoengine import (
@@ -7,8 +8,10 @@ from mongoengine import (
     ReferenceField,
     DateTimeField,
     EmailField,
+    EnumField,
 )
 
+from .i18n import SupportedLocales
 
 class User(db.Document):
     """
@@ -20,7 +23,10 @@ class User(db.Document):
 
     password = StringField(required=True)
 
+    locale = EnumField(SupportedLocales)
+
     created_at = DateTimeField(required=True, default=datetime.utcnow)
+
 
 
 class Item(db.Document):
