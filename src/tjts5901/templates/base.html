@@ -11,6 +11,27 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='windows-95-ui-kit/css/w95.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    {# Sentry tracing for client side. See: https://docs.sentry.io/platforms/javascript/install/cdn/ #}
+    {% if config['SENTRY_DSN'] %}
+      {{sentry_trace}}
+      <script
+        src="https://browser.sentry-cdn.com/7.35.0/bundle.tracing.min.js"
+        integrity="sha384-CjDPchuHUNlGb4GlhyuebuZegU12keiasU1R69+B0VhN5ShdBb06nBWZRfGi73G1"
+        crossorigin="anonymous">
+      </script>
+      <script>
+        Sentry.onLoad(function() {
+          Sentry.init({
+            dsn: {{config['SENTRY_DSN'] | tojson}},
+            release: {{config['SENTRY_RELEASE'] | tojson}},
+            environment: {{config['SENTRY_ENVIRONMENT'] | tojson}},
+            integrations: [new Sentry.BrowserTracing()],
+          });
+        });
+      </script>
+    {% endif %}
+
   </head>
   <body class="bg-secondary">
 
