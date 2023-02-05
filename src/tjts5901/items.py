@@ -122,3 +122,8 @@ def delete(id):
     else:
         flash("Item deleted successfully!")
     return redirect(url_for('items.index'))
+
+@bp.route('/item/<id>/bid', methods=('POST',))
+@login_required
+def bid(id):
+    ...
