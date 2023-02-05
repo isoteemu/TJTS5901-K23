@@ -80,6 +80,23 @@ def sell():
     return render_template('items/sell.html')
 
 
+@bp.route('/item/<id>')
+def view(id):
+    """
+    Item view page.
+
+    Displays the item details, and a form to place a bid.
+    """
+
+    item = Item.objects.get_or_404(id=id)
+
+    # Dark pattern to show enticing message to user
+    if item.closes_at < datetime.utcnow() + timedelta(hours=1):
+        flash("This item is closing soon! Act now! Now! Now!")
+
+    return render_template('items/view.html', item=item)
+
+
 @bp.route('/item/<id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
@@ -122,3 +139,4 @@ def delete(id):
     else:
         flash("Item deleted successfully!")
     return redirect(url_for('items.index'))
+

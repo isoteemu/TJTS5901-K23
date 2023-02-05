@@ -40,7 +40,7 @@
             {% for item in items.items %}
             <tr>
               <td>
-                  {{ item.title }}
+                  <a href="{{ url_for('items.view', id=item.id)}}">{{ item.title }}</a>
                   {% if g.user == item.seller %}
                       <a class="action btn btn-primary" href="{{ url_for('items.update', id=item['id']) }}">Edit</a>
                   {% endif %}
