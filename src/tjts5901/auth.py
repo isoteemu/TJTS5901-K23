@@ -1,8 +1,11 @@
 import functools
+import logging
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
+from flask_login import LoginManager
+
 from werkzeug.security import check_password_hash, generate_password_hash
 from sentry_sdk import set_user
 
@@ -11,22 +14,36 @@ from .models import User
 from mongoengine import DoesNotExist
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+logger = logging.getLogger(__name__)
 
-@bp.before_app_request
-def load_logged_in_user():
+
+def init_auth(app):
     """
-    If a user id is stored in the session, load the user object from
+    Integrate authentication into the application.
     """
+    app.register_blueprint(bp)
 
-    user_id = session.get('user_id')
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.user_loader(load_logged_in_user)
 
-    if user_id is None:
-        g.user = None
-        set_user(None)
+    login_manager.init_app(app)
 
-    else:
-        g.user = User.objects.get(id=user_id)
+    logger.debug("Initialized authentication")
+
+
+def load_logged_in_user(user_id):
+    """
+    Load a user from the database, given the user's id.
+    """
+    try:
+        user = User.get(id=user_id)
         set_user({"id": str(g.user.id), "email": g.user.email})
+    except DoesNotExist:
+        logger.error("User not found: %s", user_id)
+        return None
+
+    return user
 
 
 def login_required(view):

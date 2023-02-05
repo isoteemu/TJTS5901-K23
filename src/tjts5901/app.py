@@ -67,8 +67,8 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     def hello():
         return 'Hello, World!'
 
-    from . import auth
-    flask_app.register_blueprint(auth.bp)
+    from .auth import init_auth
+    init_auth(flask_app)
 
     from . import items
     flask_app.register_blueprint(items.bp)
