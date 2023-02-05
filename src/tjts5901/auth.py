@@ -2,12 +2,13 @@ import functools
 import logging
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, redirect, render_template, request, session, url_for
 )
 from flask_login import (
     LoginManager,
     login_user,
     logout_user,
+    login_required,
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -48,17 +49,6 @@ def load_logged_in_user(user_id):
         return None
 
     return user
-
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-
-        return view(**kwargs)
-
-    return wrapped_view
 
 
 @bp.route('/register', methods=('GET', 'POST'))
