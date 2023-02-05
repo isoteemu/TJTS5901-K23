@@ -14,7 +14,7 @@
         <div class="row no-gutters">
             <div class="col-md-4">
                 {# Maybe on future we'll have image support. Feels like an important feature to have. #}
-                <img src="..." alt="...">
+                <img src="#" alt="...">
             </div>
             <div class="col-md-8">
                 <div class="card-body border-0">
@@ -38,7 +38,35 @@
                                     <time datetime="{{ item.created_at.isoformat() }}">{{ item.created_at }}</time>
                                 </div>
                             </div>
-    
+                            <hr /><!-- ------------------------------------------------ -->
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-form-label">
+                                    {# TODO: Follow dark patterns and change this to "time left" #}
+                                    Starting bid
+                                </div>
+                                <div class="col-sm-8">
+                                    <strong>{{ min_bid }} &euro;</strong>
+                                </div>
+                            </div>
+                            <form action="{{ url_for('items.bid', id=item.id)}}" method="post">
+                                <div class="form-group row">
+                                    <label for="bid" class="col-sm-3 col-form-label">Your bid</label>
+                                    <div class="col-sm-6">
+                                        <label class="sr-only" for="bid">Bid amount</label>
+                                        <div class="input-group">
+                                            <input type="number" name="amount" class="" id="bid" placeholder="Bid amount" min="{{ min_bid }}" required> &euro;
+                                        </div>
+
+                                        <small class="form-text text-muted">
+                                            Minimum bid is {{ min_bid }} &euro;
+                                        </small>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="submit" class="btn btn-info btn-lg btn-block border-dark">Bid</button>
+                                    </div>
+                                </div>
+                            </form>
+
                         {% else %}
                             <div class="alert alert-info">
                                 <strong>Item is no longer at sale.</strong> Next time, act faster!
@@ -46,8 +74,12 @@
                         {% endif %}
                     </p>
                     <hr />
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    
+                    {# Contact seller buttons #}
+                    <div class="row">
+                        <div class="col">
+                            <a href="mailto:{{item.seller.email}}" class="btn btn-primary btn-sm">💌 Contact seller</a>
+                            <a href="tel:{{item.seller.phone}}" class="btn btn-primary btn-sm">☎️ Call seller</a>
+                        </div>
                 </div>
             </div>
         </div>
