@@ -55,8 +55,8 @@
           </li>
         </ul>
         <ul class="navbar-nav">
-          {% if g.user %}
-          <li class="nav-item"><span>{{ g.user['username'] }}</span></li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item"><span>{{ current_user['email'] }}</span></li>
           <li class="nav-item"><a href="{{ url_for('auth.logout') }}" class="nav-link">Log Out</a></li>
           {% else %}
           <li class="nav-item"><a href="{{ url_for('auth.register') }}" class="nav-link">Register</a>
