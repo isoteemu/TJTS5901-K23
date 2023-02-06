@@ -58,6 +58,14 @@ class Bid(db.Document):
     A model for bids on items.
     """
 
+    meta = {"indexes": [
+        {"fields": [
+            "amount",
+            "item",
+            "created_at",
+        ]}
+    ]}
+
     amount = IntField(required=True, min_value=0)
     "Indicates the value of the bid."
 
