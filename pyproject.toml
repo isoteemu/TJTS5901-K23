@@ -29,6 +29,7 @@ dependencies = {file = ["requirements.txt"]}
 test = [
   "pytest",
   "coverage",
+  "coverage[toml]",
 ]
 docs = [
   "mkdocs",
@@ -44,4 +45,16 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 testpaths = [
     "tests",
+]
+filterwarnings = [
+  ## Silence json encoder warnings for Flask >=2.3
+  # "ignore::DeprecationWarning:mongoengine.connection",
+  # "ignore::DeprecationWarning:flask_mongoengine.json",
+  # "ignore::DeprecationWarning:flask.json.provider",
+]
+
+[tool.coverage.run]
+branch = true
+source_pkgs = [
+    "tjts5901",
 ]
