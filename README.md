@@ -25,3 +25,8 @@ docker run -it -p 5001:5001 -e "FLASK_DEBUG=1" -v "${PWD}:/app" tjts5901
 ```
 
 Please see the `docs/tjts5901` folder for more complete documentation.
+
+
+## Reporting issues and bugs
+
+To report bugs, please use [the project "issues" form](https://gitlab.jyu.fi/startuplab/courses/tjts5901-continuous-software-engineering/TJTS5901-K23_template/-/issues/new?issuable_template=Default)
