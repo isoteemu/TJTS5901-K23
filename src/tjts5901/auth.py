@@ -143,6 +143,7 @@ def logout():
     return redirect(url_for('index'))
 
 
+@bp.route('/profile', defaults={'email': 'me'})
 @bp.route('/profile/<email>')
 @login_required
 def profile(email):
