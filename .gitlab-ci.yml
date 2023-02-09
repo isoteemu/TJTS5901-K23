@@ -76,6 +76,66 @@ test:
         coverage_format: cobertura
         path: coverage.xml
 
+
+## Job to setup new staging job.
+deploy to staging:
+    stage: staging
+    ## Only run this stage when main branch receives changes.
+    only:
+        - main
+
+    ## Use microsoft provided azure cli image, that contains az cli.
+    image: mcr.microsoft.com/azure-cli
+
+    ## Setup the environment variables. The can be accessed through the gitlab 
+    ## Deployments -> Environments. Generates url based on the app and branch name.
+    environment:
+        name: $CI_JOB_STAGE
+        url: https://${AZURE_APP_NAME}-${CI_ENVIRONMENT_SLUG}.azurewebsites.net
+
+    before_script:
+        ## Make sanity check that gitlab variables stage is done.
+        - test -z "${AZURE_SP_NAME}" && (echo "Missing required variable AZURE_SP_NAME. See 'Staging.md'"; exit 1)
+        - test -f "${AZURE_SP_CERT}" || ( echo "AZURE_SP_CERT (${AZURE_SP_CERT}) file is missing!"; exit 1)
+
+        - test -z "${AZURE_APP_NAME}" && (echo "Missing required variable AZURE_APP_NAME. See 'Staging.md'"; exit 1)
+        - test -z "${AZURE_RESOURCE_GROUP}" && (echo "Missing required variable DOCKER_AUTH_CONFIG. See 'Staging.md'"; exit 1)        
+        
+        ## Login into azure
+        - az login --service-principal -u "${AZURE_SP_NAME}" -p "${AZURE_SP_CERT}" --tenant "jyu.onmicrosoft.com"
+
+    script:
+        ## Create staging slot and copy settings from production
+        - az webapp deployment slot create -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" \
+            --slot "$CI_ENVIRONMENT_SLUG" --configuration-source "$AZURE_APP_NAME"
+
+        ## TODO: Create a snapshot of database, and use it.
+
+        ## If you need to change settings see: https://docs.microsoft.com/en-us/cli/azure/webapp/config/appsettings
+
+        ## Change container tag to reflect branch we're running on
+        - az webapp config container set -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" \
+            --docker-custom-image-name "${DOCKER_IMAGE_NAME}:${DOCKER_TAG}" -s "$CI_ENVIRONMENT_SLUG"
+
+        ## In case slot already existed, restart the slot
+        - az webapp restart -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" -s "$CI_ENVIRONMENT_SLUG"
+
+        ## Restart is not immediate, it takes a sec or two, depending on container changes.
+        - sleep 20
+
+        ## Store server info as artifact for prosperity
+        - curl "$CI_ENVIRONMENT_URL/server-info" -o server-info.json
+
+        ## Download log files, and store them in artifacts (see `artifacts:` -section)
+        ## Currently this creates a zip bomb, issue with azure.
+        - az webapp log download -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" --slot "$CI_ENVIRONMENT_SLUG"
+
+    artifacts:
+        paths:
+            - server-info.json
+            - webapp_logs.zip
+
+
 ## Deploy latest image to the production
 deploy:
   stage: deploy
