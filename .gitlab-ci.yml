@@ -139,14 +139,9 @@ deploy to staging:
         ## Store server info as artifact for prosperity
         - curl "$CI_ENVIRONMENT_URL/server-info" -o server-info.json
 
-        ## Download log files, and store them in artifacts (see `artifacts:` -section)
-        ## Currently this creates a zip bomb, issue with azure.
-        - az webapp log download -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" --slot "$CI_ENVIRONMENT_SLUG"
-
     artifacts:
         paths:
             - server-info.json
-            - webapp_logs.zip
 
 
 ## Push latest image into registry with the `latest` tag.
