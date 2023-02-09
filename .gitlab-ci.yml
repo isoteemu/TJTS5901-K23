@@ -136,8 +136,8 @@ deploy to staging:
             - webapp_logs.zip
 
 
-## Deploy latest image to the production
-deploy:
+## Push latest image into registry with the `latest` tag.
+docker tag latest:
   stage: deploy
   environment: production
   image: docker:20.10.23
