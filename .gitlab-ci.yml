@@ -148,3 +148,22 @@ deploy:
     - mkdir -p ${HOME}/.docker && echo "${DOCKER_AUTH_CONFIG}" > "${HOME}/.docker/config.json"
     ## Add the `latest` tag to the image we have build.
     - docker buildx imagetools create ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} --tag ${DOCKER_IMAGE_NAME}:latest
+
+
+## Swap the production and staging slots around.
+staging to production:
+    stage: deploy
+    ## Only run this stage when main branch receives changes.
+    only:
+        - main
+
+    ## Use microsoft provided azure cli image, that contains az cli.
+    image: mcr.microsoft.com/azure-cli
+
+    environment:
+        name: production
+        url: https://${AZURE_APP_NAME}.azurewebsites.net/
+
+    script:
+        ## Swap production and staging slots.
+        - az webapp deployment slot swap -g "$AZURE_RESOURCE_GROUP" -n "$AZURE_APP_NAME" -s staging --target-slot production
