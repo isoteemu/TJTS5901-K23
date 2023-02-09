@@ -68,3 +68,10 @@ class Item(db.Document):
 
     created_at = DateTimeField(required=True, default=datetime.utcnow)
     closes_at = DateTimeField()
+
+    @property
+    def is_open(self) -> bool:
+        """
+        Return whether the item is open for bidding.
+        """
+        return self.closes_at > datetime.utcnow()
