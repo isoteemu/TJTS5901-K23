@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <h1 class="mr-auto">{% block title %}{{item.title}}{% endblock %}</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-3">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                {# Maybe on future we'll have image support. Feels like an important feature to have. #}
+                <img src="#" alt="...">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body border-0">
+                    <h5 class="card-title">{{item.title}} by <a href="#">{{item.seller.email}}</a></h5>
+                    <p class="card-text">
+                        {% if item.is_open %}
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-form-label">
+                                    {# TODO: Follow dark patterns and change this to "time left" #}
+                                    Closes at
+                                </div>
+                                <div class="col-sm-8">
+                                    <time datetime="{{ item.closes_at.isoformat() }}">{{ item.closes_at }}</time>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-form-label">
+                                    Added at
+                                </div>
+                                <div class="col-sm-8">
+                                    <time datetime="{{ item.created_at.isoformat() }}">{{ item.created_at }}</time>
+                                </div>
+                            </div>
+                            <hr /><!-- ------------------------------------------------ -->
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-form-label">
+                                    {# TODO: Follow dark patterns and change this to "time left" #}
+                                    Starting bid
+                                </div>
+                                <div class="col-sm-8">
+                                    <strong>{{ min_bid }} &euro;</strong>
+                                </div>
+                            </div>
+                            <form action="{{ url_for('items.bid', id=item.id)}}" method="post">
+                                <div class="form-group row">
+                                    <label for="bid" class="col-sm-3 col-form-label">Your bid</label>
+                                    <div class="col-sm-6">
+                                        <label class="sr-only" for="bid">Bid amount</label>
+                                        <div class="input-group">
+                                            <input type="number" name="amount" class="" id="bid" placeholder="Bid amount" min="{{ min_bid }}" required> &euro;
+                                        </div>
+
+                                        <small class="form-text text-muted">
+                                            Minimum bid is {{ min_bid }} &euro;
+                                        </small>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="submit" class="btn btn-info btn-lg btn-block border-dark">Bid</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                        {% else %}
+                            <div class="alert alert-info">
+                                <strong>Item is no longer at sale.</strong> Next time, act faster!
+                            </div>
+                        {% endif %}
+                    </p>
+                    <hr />
+                    {# Contact seller buttons #}
+                    <div class="row">
+                        <div class="col">
+                            <a href="mailto:{{item.seller.email}}" class="btn btn-primary btn-sm">💌 Contact seller</a>
+                            <a href="tel:{{item.seller.phone}}" class="btn btn-primary btn-sm">☎️ Call seller</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div clas="row">
+            <div class="col-md-12">
+                <p>{{item.description}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+            <a href="https://twitter.com/intent/tweet?url={{ url_for('items.view', id=item.id, _external=True) | urlencode }}&text={{ "Check out this awesome and cheap item." | urlencode }}" class="btn btn-twitter" target="_blank" style="background-color: #1DA1F2; color:#fff;">
+                🐦
+                Elon-senpai notice me!
+            </a>
+            <a href="https://www.facebook.com/sharer.php?u={{ url_for('items.view', id=item.id, _external=True) | urlencode }}" target="_blank" class="btn btn-twitter" target="_blank" style="background-color: #4267B2; color:#fff;">
+                🌙
+                Zuckdaddy, you so alpha!
+            </a>
+            <a href="mailto:?subject={{ item.title | urlencode }}&body={{ url_for('items.view', id=item.id, _external=True) | urlencode }}" target="_blank" class="btn btn-primary" target="_blank">
+                📧
+                Email to a friend
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

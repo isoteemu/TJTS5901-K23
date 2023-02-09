@@ -75,3 +75,29 @@ class Item(db.Document):
         Return whether the item is open for bidding.
         """
         return self.closes_at > datetime.utcnow()
+
+
+class Bid(db.Document):
+    """
+    A model for bids on items.
+    """
+
+    meta = {"indexes": [
+        {"fields": [
+            "amount",
+            "item",
+            "created_at",
+        ]}
+    ]}
+
+    amount = IntField(required=True, min_value=0)
+    "Indicates the value of the bid."
+
+    bidder = ReferenceField(User, required=True)
+    "User who placed the bid."
+
+    item = ReferenceField(Item, required=True)
+    "Item that the bid is for."
+
+    created_at = DateTimeField(required=True, default=datetime.utcnow)
+    "Date and time that the bid was placed."

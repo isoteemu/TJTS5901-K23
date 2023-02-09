@@ -1,13 +1,19 @@
 from datetime import datetime, timedelta
+import logging
+from typing import Optional
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
 
 from .auth import login_required, current_user
-from .models import Item
+from .models import Bid, Item
 
 bp = Blueprint('items', __name__)
+
+logger = logging.getLogger(__name__)
+
+MIN_BID_INCREMENT = 1
 
 
 def get_item(id):
@@ -21,6 +27,48 @@ def get_item(id):
         return item
     
     abort(403)
+
+
+def get_winning_bid(item: Item) -> Optional[Bid]:
+    """
+    Return the (currently) winning bid for the given item.
+
+    If there are no bids, or the item is not yet closed, return None.
+
+    :param item: The item to get the winning bid for.
+    :return: The winning bid, or None.
+    """
+
+    winning_bid = None
+    try:
+        winning_bid = Bid.objects(item=item) \
+            .filter(created_at__lt=item.closes_at) \
+            .order_by('-amount') \
+            .first()
+    except Exception as exc:
+        logger.warning("Error getting winning bid: %s", exc, exc_info=True, extra={
+            'item_id': item.id,
+        })
+
+    return winning_bid
+
+
+def get_item_price(item: Item) -> int:
+    """
+    Return the current price of the given item.
+
+    If there are no bids, return the starting bid.
+
+    :param item: The item to get the price for.
+    :return: The current price.
+    """
+
+    winning_bid = get_winning_bid(item)
+    if winning_bid:
+        return winning_bid.amount + MIN_BID_INCREMENT
+    else:
+        return item.starting_bid
+
 
 @bp.route("/", defaults={'page': 1})
 @bp.route("/items/<int:page>")
@@ -80,6 +128,29 @@ def sell():
     return render_template('items/sell.html')
 
 
+@bp.route('/item/<id>')
+def view(id):
+    """
+    Item view page.
+
+    Displays the item details, and a form to place a bid.
+    """
+
+    item = Item.objects.get_or_404(id=id)
+
+    # Set the minumum price for the bid form from the current winning bid
+    winning_bid = get_winning_bid(item)
+    min_bid = get_item_price(item)
+
+    if item.closes_at < datetime.utcnow() and winning_bid.bidder == current_user:
+        flash("Congratulations! You won the auction!")
+    elif item.closes_at < datetime.utcnow() + timedelta(hours=1):
+        # Dark pattern to show enticing message to user
+        flash("This item is closing soon! Act now! Now! Now!")
+
+    return render_template('items/view.html', item=item, min_bid=min_bid)
+
+
 @bp.route('/item/<id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
@@ -123,7 +194,44 @@ def delete(id):
         flash("Item deleted successfully!")
     return redirect(url_for('items.index'))
 
+
 @bp.route('/item/<id>/bid', methods=('POST',))
 @login_required
 def bid(id):
-    ...
+    """
+    Bid on an item.
+
+    If the bid is valid, create a new bid and redirect to the item view page.
+    Otherwise, display an error message and redirect back to the item view page.
+
+    :param id: The id of the item to bid on.
+    :return: A redirect to the item view page.
+    """
+
+    item = Item.objects.get_or_404(id=id)
+    min_amount = get_item_price(item)
+    amount = int(request.form['amount'])
+
+    if amount < min_amount:
+        flash(f"Bid must be at least {min_amount}")
+        return redirect(url_for('items.view', id=id))
+
+    if item.closes_at < datetime.utcnow():
+        flash("This item is no longer on sale.")
+        return redirect(url_for('items.view', id=id))
+
+    try:
+        # Notice: if you have integrated the flask-login extension, use current_user
+        # instead of g.user
+        bid = Bid(
+            item=item,
+            bidder=current_user,
+            amount=amount,
+        )
+        bid.save()
+    except Exception as exc:
+        flash(f"Error placing bid: {exc!s}")
+    else:
+        flash("Bid placed successfully!")
+
+    return redirect(url_for('items.view', id=id))
