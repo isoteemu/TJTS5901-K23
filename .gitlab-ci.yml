@@ -13,6 +13,8 @@ variables:
   ## (Optional) More verbose output from pipeline. Enabling it might reveal secrets.
   #CI_DEBUG_TRACE: "true"
 
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
 
 ## Use buildkit to build the container.
 ## Buildkit: https://github.com/moby/buildkit
@@ -44,6 +46,15 @@ build:
           --local dockerfile=. \
           --opt build-arg:CI_COMMIT_SHA=${CI_COMMIT_SHA} \
           --output type=image,name=${DOCKER_IMAGE_NAME}:${DOCKER_TAG},push=true
+
+
+sast:
+    ## Static Application Security Test
+    ## You can override the included template(s) by including variable overrides
+    ## SAST customization:
+    ##   https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+    stage: test
+
 
 ## Run the tests. If any of the tests fails, pipeline is rejected.
 test:
