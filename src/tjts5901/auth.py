@@ -1,8 +1,17 @@
 import functools
+import logging
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, redirect, render_template, request, session, url_for
 )
+from flask_login import (
+    LoginManager,
+    login_user,
+    logout_user,
+    login_required,
+    current_user,
+)
+
 from werkzeug.security import check_password_hash, generate_password_hash
 from sentry_sdk import set_user
 
@@ -11,33 +20,36 @@ from .models import User
 from mongoengine import DoesNotExist
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+logger = logging.getLogger(__name__)
 
-@bp.before_app_request
-def load_logged_in_user():
+
+def init_auth(app):
     """
-    If a user id is stored in the session, load the user object from
+    Integrate authentication into the application.
     """
+    app.register_blueprint(bp)
 
-    user_id = session.get('user_id')
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.user_loader(load_logged_in_user)
 
-    if user_id is None:
-        g.user = None
-        set_user(None)
+    login_manager.init_app(app)
 
-    else:
-        g.user = User.objects.get(id=user_id)
-        set_user({"id": str(g.user.id), "email": g.user.email})
+    logger.debug("Initialized authentication")
 
 
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
+def load_logged_in_user(user_id):
+    """
+    Load a user from the database, given the user's id.
+    """
+    try:
+        user = User.objects.get(id=user_id)
+        set_user({"id": str(user.id), "email": user.email})
+    except DoesNotExist:
+        logger.error("User not found: %s", user_id)
+        return None
 
-        return view(**kwargs)
-
-    return wrapped_view
+    return user
 
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -97,19 +109,36 @@ def login():
             error = 'Incorrect password.'
 
         if error is None:
-            session.clear()
-            session['user_id'] = str(user['id'])
-            flash(f"Hello {email}, You have been logged in.")
-            return redirect(url_for('items.index'))
+            remember_me = bool(request.form.get("remember-me", False))
+            if login_user(user, remember=remember_me):
 
-        print("Error logging in:", error)
+                flash(f"Hello {email}, You have been logged in.")
+
+                next = request.args.get('next')
+                # Better check that the user actually clicked on a relative link
+                # or else they could redirect you to a malicious website!
+                if next is None or not next.startswith('/'):
+                    next = url_for('index')
+
+                return redirect(next)
+            else:
+                error = "Error logging in."
+
+        logger.info("Error logging user in: %r: Error: %s", email, error)
         flash(error)
 
     return render_template('auth/login.html')
 
+
 @bp.route('/logout')
+@login_required
 def logout():
-    session.clear()
+    """
+    Log out the current user.
+
+    Also removes the "remember me" cookie.
+    """
+    logout_user()
     flash("You have been logged out.")
     return redirect(url_for('index'))
 

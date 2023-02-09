@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
 
-from .auth import login_required
+from .auth import login_required, current_user
 from .models import Item
 
 bp = Blueprint('items', __name__)
@@ -17,7 +17,7 @@ def get_item(id):
         print("Error getting item:", exc)
         abort(404)
 
-    if item.seller == g.user:
+    if item.seller == current_user:
         return item
     
     abort(403)
@@ -64,7 +64,7 @@ def sell():
                     title=title,
                     description=description,
                     starting_bid=starting_bid,
-                    seller=g.user,
+                    seller=current_user,
                     closes_at=datetime.utcnow() + timedelta(days=1)
 
                 )

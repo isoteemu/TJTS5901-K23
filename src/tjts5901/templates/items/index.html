@@ -41,7 +41,7 @@
             <tr>
               <td>
                   {{ item.title }}
-                  {% if g.user == item.seller %}
+                  {% if current_user == item.seller %}
                       <a class="action btn btn-primary" href="{{ url_for('items.update', id=item['id']) }}">Edit</a>
                   {% endif %}
               </td>

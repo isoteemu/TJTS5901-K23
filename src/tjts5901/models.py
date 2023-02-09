@@ -7,13 +7,18 @@ from mongoengine import (
     ReferenceField,
     DateTimeField,
     EmailField,
+    BooleanField,
 )
 
+from flask_login import UserMixin
+from bson import ObjectId
 
-class User(db.Document):
+
+class User(UserMixin, db.Document):
     """
     Model representing a user of the auction site.
     """
+    id: ObjectId
 
     email = EmailField(required=True, unique=True)
     "The user's email address."
@@ -21,6 +26,25 @@ class User(db.Document):
     password = StringField(required=True)
 
     created_at = DateTimeField(required=True, default=datetime.utcnow)
+
+    is_disabled = BooleanField(default=False)
+    "Whether the user is disabled."
+
+    @property
+    def is_active(self) -> bool:
+        """
+        Return whether the user is active.
+
+        This is used by Flask-Login to determine whether the user is
+        allowed to log in.
+        """
+        return not self.is_disabled
+
+    def get_id(self) -> str:
+        """
+        Return the user's id as a string.
+        """
+        return str(self.id)
 
 
 class Item(db.Document):
