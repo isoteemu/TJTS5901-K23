@@ -117,7 +117,8 @@ deploy to staging:
 
     script:
         ## Create staging slot and copy settings from production
-        - az webapp deployment slot create -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" \
+        - |
+          az webapp deployment slot create -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" \
             --slot "$CI_ENVIRONMENT_SLUG" --configuration-source "$AZURE_APP_NAME"
 
         ## TODO: Create a snapshot of database, and use it.
@@ -125,7 +126,8 @@ deploy to staging:
         ## If you need to change settings see: https://docs.microsoft.com/en-us/cli/azure/webapp/config/appsettings
 
         ## Change container tag to reflect branch we're running on
-        - az webapp config container set -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" \
+        - |
+          az webapp config container set -n "$AZURE_APP_NAME" -g "$AZURE_RESOURCE_GROUP" \
             --docker-custom-image-name "${DOCKER_IMAGE_NAME}:${DOCKER_TAG}" -s "$CI_ENVIRONMENT_SLUG"
 
         ## In case slot already existed, restart the slot
