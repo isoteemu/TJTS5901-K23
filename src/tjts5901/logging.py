@@ -76,7 +76,7 @@ def init_logging(app: Flask):
     # Setup sentry logging
     sentry_dsn = app.config.get("SENTRY_DSN")
     release = app.config.get("CI_COMMIT_SHA", get_version() or "dev")
-    enviroment = app.config.get("CI_ENVIRONMENT_NAME")
+    enviroment = app.config.get("SENTRY_ENVIRONMENT", "production")
 
     if sentry_dsn:
         sentry = sentry_sdk.init(
