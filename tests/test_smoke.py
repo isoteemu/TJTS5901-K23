@@ -39,3 +39,8 @@ def test_server_status(deployment_address: str, path="/server-info"):
 
     assert resp.status_code == 200
     assert resp.headers['Content-Type'] == 'application/json'
+
+    data = resp.json()
+
+    assert data['sentry_available'] is True, "App reporting that the sentry is not available"
+    assert data['database_connectable'] is True, "App reporting that the database is not available"
