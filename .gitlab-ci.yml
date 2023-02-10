@@ -3,6 +3,7 @@ stages:
   - build
   - test
   - staging
+  - smoketest
   - deploy
 
 variables:
@@ -134,6 +135,25 @@ deploy to staging:
         paths:
             - server-info.json
             - webapp_logs.zip
+
+
+## Run smoketest to check that staging app is responding as expected.
+staging smoketest:
+    stage: smoketest
+    image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+    environment:
+        name: staging
+        url: https://${AZURE_APP_NAME}-${CI_ENVIRONMENT_SLUG}.azurewebsites.net
+
+    only:
+        - main
+
+    script:
+        - pip install --disable-pip-version-check -e .[test]
+        ## Environment url can be inherited from CI_ENVIROMNENT_URL, which is one defined
+        ## in the `environment.url:`. Using it here explicitly.
+        - echo "Testing againsta deployment address ${CI_ENVIROMNENT_URL}"
+        - pytest -v --environment-url="${CI_ENVIROMNENT_URL}" tests/test_smoke.py
 
 
 ## Push latest image into registry with the `latest` tag.
