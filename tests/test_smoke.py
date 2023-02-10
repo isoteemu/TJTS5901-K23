@@ -44,3 +44,15 @@ def test_server_status(deployment_address: str, path="/server-info"):
 
     assert data['sentry_available'] is True, "App reporting that the sentry is not available"
     assert data['database_connectable'] is True, "App reporting that the database is not available"
+
+
+def test_404(deployment_address, path="/_404"):
+    """
+    Anti-thesis: Check that the correct error code - 404 - is returned for missing page (:param:`path`)
+    """
+
+    deployment_address = deployment_address.rstrip("/")
+    resp = requests.get(deployment_address + path, timeout=5)
+    assert resp.status_code == 404, f"Expected to receive 404 for path {path}"
+    # QED
+
