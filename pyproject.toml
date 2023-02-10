@@ -30,6 +30,7 @@ test = [
   "pytest",
   "coverage",
   "coverage[toml]",
+  "requests",
 ]
 docs = [
   "mkdocs",

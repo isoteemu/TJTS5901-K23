@@ -5,6 +5,7 @@ Smoketests
 Thease are tests that run in gitlab runner, but they target review or staging
 environment.
 """
+import requests
 import pytest
 
 
@@ -33,5 +34,8 @@ def test_server_status(deployment_address: str, path="/server-info"):
     Fetch server status page and checks for Falsies.
     """
 
-    print(f"Checking {deployment_address}{path}")
-    assert deployment_address is not None, "Deployment address is not defined"
+    deployment_address = deployment_address.rstrip("/")
+    resp = requests.get(deployment_address + path, timeout=5)
+
+    assert resp.status_code == 200
+    assert resp.headers['Content-Type'] == 'application/json'
