@@ -4,6 +4,7 @@ from typing import Optional
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for
 )
+from flask_babel import _
 from werkzeug.exceptions import abort
 
 from .auth import login_required, current_user
@@ -118,12 +119,17 @@ def sell():
                 )
                 item.save()
             except Exception as exc:
-                error = f"Error creating item: {exc!s}"
+                error = _("Error creating item: %(exc)s", exc=exc)
+                logger.warning("Error creating item: %s", exc, exc_info=True, extra={
+                    'title': title,
+                    'description': description,
+                    'starting_bid': starting_bid,
+                })
             else:
                 return redirect(url_for('items.index'))
 
             print(error)
-            flash(error)
+            flash(error, category='error')
 
     return render_template('items/sell.html')
 
@@ -143,10 +149,10 @@ def view(id):
     min_bid = get_item_price(item)
 
     if item.closes_at < datetime.utcnow() and winning_bid.bidder == current_user:
-        flash("Congratulations! You won the auction!")
+        flash(_("Congratulations! You won the auction!"))
     elif item.closes_at < datetime.utcnow() + timedelta(hours=1):
         # Dark pattern to show enticing message to user
-        flash("This item is closing soon! Act now! Now! Now!")
+        flash(_("This item is closing soon! Act now! Now! Now!"))
 
     return render_template('items/view.html', item=item, min_bid=min_bid)
 
@@ -162,20 +168,23 @@ def update(id):
         error = None
 
         if not title:
-            error = 'Title is required.'
+            error = _('Title is required.')
 
         try:
             item.title = title
             item.description = description
             item.save()
         except Exception as exc:
-            error = f"Error updating item: {exc!s}"
+            error = _("Error updating item: %(exc)s", exc=exc)
+            logger.warning("Error updating item: %s", exc, exc_info=True, extra={
+                'item_id': item.id,
+            })
         else:
-            flash("Item updated successfully!")
+            flash(_("Item updated successfully!"))
             return redirect(url_for('items.index'))
 
         print(error)
-        flash(error)
+        flash(error, category='error')
 
     return render_template('items/update.html', item=item)
 
@@ -187,11 +196,12 @@ def delete(id):
     try:
         item.delete()
     except Exception as exc:
-        error = f"Error deleting item: {exc!s}"
-        print(error)
-        flash(error)
+        logger.warning("Error deleting item: %s", exc, exc_info=True, extra={
+            'item_id': item.id,
+        })
+        flash(_("Error deleting item: %(exc)s", exc=exc), category='error')
     else:
-        flash("Item deleted successfully!")
+        flash(_("Item deleted successfully!"))
     return redirect(url_for('items.index'))
 
 
@@ -213,7 +223,7 @@ def bid(id):
     amount = int(request.form['amount'])
 
     if amount < min_amount:
-        flash(f"Bid must be at least {min_amount}")
+        flash(_("Bid must be at least %(min_amount)s", min_amount=min_amount))
         return redirect(url_for('items.view', id=id))
 
     if item.closes_at < datetime.utcnow():
@@ -230,8 +240,8 @@ def bid(id):
         )
         bid.save()
     except Exception as exc:
-        flash(f"Error placing bid: {exc!s}")
+        flash(_("Error placing bid: %(exc)s", exc=exc))
     else:
-        flash("Bid placed successfully!")
+        flash(_("Bid placed successfully!"))
 
     return redirect(url_for('items.view', id=id))
