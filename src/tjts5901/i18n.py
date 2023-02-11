@@ -2,6 +2,7 @@
 Internationalisation and localisation support for the application.
 """
 from enum import Enum
+import os
 from typing import List
 from flask_babel import Babel, get_locale as get_babel_locale
 from babel import Locale
@@ -49,6 +50,8 @@ def init_babel(flask_app: Flask):
     # Configure the Flask-Babel extension.
     # Try setting the default locale from underlying OS. Falls back into English.
     system_language = Locale.default().language
+    translation_dir = os.path.join(os.path.dirname(__file__), "translations")
+    flask_app.config.setdefault("BABEL_TRANSLATION_DIRECTORIES", translation_dir)
     flask_app.config.setdefault("BABEL_DEFAULT_LOCALE", system_language)
 
     # TODO: Set the default timezone from underlying OS.
