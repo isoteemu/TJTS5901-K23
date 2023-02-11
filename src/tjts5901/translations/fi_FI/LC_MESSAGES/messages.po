@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-11 10:53+0000\n"
+"POT-Creation-Date: 2023-02-11 15:39+0000\n"
 "PO-Revision-Date: 2023-02-04 21:51+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi_FI\n"
@@ -26,52 +26,62 @@ msgstr "Hill Valley DMC -liike"
 msgid "Hello, World!"
 msgstr "Hei Maailma!"
 
-#: src/tjts5901/items.py:122
+# python-format
+#: src/tjts5901/items.py:121
+#, python-format
+msgid "Starting bid must be greater than %(amount)s."
+msgstr "Huudon tulee olla vähintään %(amount)s"
+
+#: src/tjts5901/items.py:134
+msgid "Item listed successfully!"
+msgstr "Tuote poistettu onnistuneesti!"
+
+#: src/tjts5901/items.py:137
 #, python-format
 msgid "Error creating item: %(exc)s"
 msgstr "Virhe luotaessa tuotetta: %(exc)s"
 
-#: src/tjts5901/items.py:152
+#: src/tjts5901/items.py:176
 msgid "Congratulations! You won the auction!"
 msgstr "Onnittelut! Voitit huutokaupan!"
 
-#: src/tjts5901/items.py:155
+#: src/tjts5901/items.py:179
 msgid "This item is closing soon! Act now! Now! Now!"
 msgstr "Tämä tuote sulkeutuu pian! Toimi nyt! Heti! Nyt!"
 
-#: src/tjts5901/items.py:171
+#: src/tjts5901/items.py:198
 msgid "Title is required."
 msgstr "Otsikko on pakollinen."
 
-#: src/tjts5901/items.py:178
+#: src/tjts5901/items.py:205
 #, python-format
 msgid "Error updating item: %(exc)s"
 msgstr "Virhe päivitettäessä tuotetta: %(exc)s"
 
-#: src/tjts5901/items.py:183
+#: src/tjts5901/items.py:210
 msgid "Item updated successfully!"
 msgstr "Tuote päivitetty onnistuneesti!"
 
-#: src/tjts5901/items.py:202
+#: src/tjts5901/items.py:229
 #, python-format
 msgid "Error deleting item: %(exc)s"
 msgstr "Virhe poistaessa tuotetta: %(exc)s"
 
-#: src/tjts5901/items.py:204
+#: src/tjts5901/items.py:231
 msgid "Item deleted successfully!"
 msgstr "Tuote poistettu onnistuneesti!"
 
-#: src/tjts5901/items.py:226
+#: src/tjts5901/items.py:257
 #, python-format
 msgid "Bid must be at least %(min_amount)s"
 msgstr "Huudon tulee olla vähintään %(min_amount)s"
 
-#: src/tjts5901/items.py:243
+#: src/tjts5901/items.py:274
 #, python-format
 msgid "Error placing bid: %(exc)s"
 msgstr "Virhe asettaessa huutoa: %(exc)s"
 
-#: src/tjts5901/items.py:245
+#: src/tjts5901/items.py:276
 msgid "Bid placed successfully!"
 msgstr "Huuto asetettu onnistuneesti!"
 
@@ -195,7 +205,7 @@ msgid "Description"
 msgstr "Kuvaus"
 
 #: src/tjts5901/templates/items/index.html:33
-#: src/tjts5901/templates/items/sell.html:23
+#: src/tjts5901/templates/items/sell.html:24
 msgid "Starting Bid"
 msgstr "Aloitushinta"
 
@@ -219,7 +229,11 @@ msgstr "Lisää tuote myyntiin"
 msgid "Add Item"
 msgstr "Lisää tuote"
 
-#: src/tjts5901/templates/items/sell.html:27
+#: src/tjts5901/templates/items/sell.html:28
+msgid "Currency"
+msgstr "Valuutta"
+
+#: src/tjts5901/templates/items/sell.html:37
 msgid "Add to listing"
 msgstr "Lisää myyntiin"
 
@@ -256,47 +270,47 @@ msgstr "Lisätty"
 msgid "Starting bid"
 msgstr "Aloitushinta"
 
-#: src/tjts5901/templates/items/view.html:55
+#: src/tjts5901/templates/items/view.html:56
 msgid "Bid amount"
 msgstr "Tarjous"
 
-#: src/tjts5901/templates/items/view.html:61
+#: src/tjts5901/templates/items/view.html:62
 #, python-format
 msgid "Minimum bid is %(min_bid)s"
 msgstr "Vähimmäistarjous on %(min_bid)s"
 
-#: src/tjts5901/templates/items/view.html:65
+#: src/tjts5901/templates/items/view.html:66
 msgid "Bid"
 msgstr "Tarjoa"
 
-#: src/tjts5901/templates/items/view.html:72
+#: src/tjts5901/templates/items/view.html:73
 #, fuzzy
 msgid "Item is no longer at sale."
 msgstr "Myynnissä olevat tuotteet"
 
-#: src/tjts5901/templates/items/view.html:72
+#: src/tjts5901/templates/items/view.html:73
 msgid "Next time, act faster!"
 msgstr "Jatkossa toimi nopeammin!"
 
-#: src/tjts5901/templates/items/view.html:80
+#: src/tjts5901/templates/items/view.html:81
 #, python-format
 msgid "%(icon)s Contact seller"
 msgstr "%(icon)s Ota yhteyttä myyjään"
 
-#: src/tjts5901/templates/items/view.html:81
+#: src/tjts5901/templates/items/view.html:82
 #, python-format
 msgid "%(icon)s Call seller"
 msgstr "%(icon)s Soita myyjälle"
 
-#: src/tjts5901/templates/items/view.html:96
+#: src/tjts5901/templates/items/view.html:97
 msgid "Elon-senpai notice me!"
 msgstr "Elon-senpai huomioi minut!"
 
-#: src/tjts5901/templates/items/view.html:100
+#: src/tjts5901/templates/items/view.html:101
 msgid "Zuckdaddy, you so alpha!"
 msgstr "Zuckdaddy, olet niin alpha!"
 
-#: src/tjts5901/templates/items/view.html:104
+#: src/tjts5901/templates/items/view.html:105
 msgid "Email to a friend"
 msgstr "Lähetä ystävälle"
 
