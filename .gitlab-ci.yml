@@ -73,7 +73,7 @@ test:
     - name: mongo:4.2  # update to reflect same version used on production
       alias: mongo
   script:
-      - pip install  --disable-pip-version-check -e /app/[test]
+      - pip install --disable-pip-version-check -e /app[test]
       ## Run tests with coverage reporting
       - coverage run -m pytest
       ## Run basic reporting for badge
