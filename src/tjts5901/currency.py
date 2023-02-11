@@ -193,7 +193,10 @@ def get_preferred_currency():
         return str(current_user.currency)
 
     # Fall back to the default currency for the locale
-    return get_territory_currencies(get_locale().territory)[0]
+    if territory := get_locale().territory:
+        return get_territory_currencies(territory)[0]
+    else:
+        return REF_CURRENCY
 
 
 @click.command()
