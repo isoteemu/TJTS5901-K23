@@ -150,6 +150,7 @@ def test_app_translation_status(locale, app, babel, app_strings, fail_treshold=0
                 # If the message is not in the catalog, then it is untranslated
                 if catalog.get(msg, "") == "":
                     untranslated_messages += 1
+                    print(f"Untranslated message: {msg} ({locale.language})")
 
             # Calculate the percentage of untranslated messages
             untranslated_percent = untranslated_messages / unique_messages
