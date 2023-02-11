@@ -49,6 +49,10 @@ RUN pip --disable-pip-version-check install -r /tmp/pip-tmp/requirements.txt && 
 ## Copy app to WORKDIR folder
 COPY . .
 
+## Compile translations before installing app. This is done to make sure that
+## translations are compiled before app is installed.
+RUN pybabel compile -f -d src/tjts5901/translations/
+
 ## Install self as editable (`-e`) module. In a long run it would be recommeded
 ## to remove `COPY` and only install app as a package.
 RUN pip --disable-pip-version-check install -v -e .
