@@ -62,7 +62,7 @@
               </button>
               <div class="dropdown-menu" id="locale-selector">
                 {% for _, lang in locales.items() %}
-                  <a class="dropdown-item {% if lang|lower == get_locale()|lower %}active{% endif %}" href="{{ url_for(request.endpoint, locale=lang) }}">{{lang.display_name}}</a>
+                  <a class="dropdown-item {% if lang|lower == get_locale()|lower %}active{% endif %}" href="{{ url_for(request.endpoint, **dict(request.view_args, locale=lang)) }}">{{lang.display_name}}</a>
                 {% endfor %}
               </div>
             </div>
