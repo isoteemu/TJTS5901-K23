@@ -1,1 +1,18 @@
 /** Add style here **/
+#locale-selector a {
+    background-repeat: no-repeat;
+    background-position: 2px 50%;
+    background-size: 18px 12px;
+    padding-left: 24px;
+    image-rendering: crisp-edges;
+}
+
+#locale-selector a[href$="locale=en_GB"] {
+    background-image: url('flags/en_GB.png');
+}
+#locale-selector a[href$="locale=fi_FI"] {
+    background-image: url('flags/fi_FI.png');
+}
+#locale-selector a[href$="locale=sv_SE"] {
+    background-image: url('flags/sv_SE.png');
+}
