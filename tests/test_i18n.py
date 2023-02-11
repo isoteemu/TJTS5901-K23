@@ -3,6 +3,7 @@ Translation tests
 =================
 """
 
+import os
 from typing import List
 
 import pytest
@@ -17,7 +18,7 @@ from flask_babel import (
 from babel.messages.extract import extract_from_dir
 
 from tjts5901.i18n import SupportedLocales
-
+from tjts5901 import __file__ as pkg_file
 
 @pytest.fixture
 def babel(app: Flask) -> Babel:
@@ -101,7 +102,6 @@ def test_app_language_detection(client, babel):
         assert gettext("Hello, World!") != resp_as_string, f"Message is not translated for language {locale.language}"
 
 
-
 @pytest.fixture(scope="session")
 def app_strings():
     """
@@ -115,8 +115,9 @@ def app_strings():
     ]
 
     # Collect all of the messages from the source code
+    dir_path = os.path.dirname(pkg_file)
     messages = set()
-    for msg in extract_from_dir('src', method_map):
+    for msg in extract_from_dir(dir_path, method_map):
         messages.add(msg[2])
 
     return messages
