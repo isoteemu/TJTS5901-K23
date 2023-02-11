@@ -21,13 +21,15 @@ from tjts5901.i18n import SupportedLocales
 from tjts5901 import __file__ as pkg_file
 
 @pytest.fixture
-def babel(app: Flask) -> Babel:
+def babel(app: Flask):
     """
     Babel translation fixture.
 
     Returns babel tranlaslation fixture registered in flask app
     """
-    yield app.extensions['babel'].instance
+    #return pytest.skip(reason="Tests fails for unknown reason")
+    with app.app_context():
+        yield app.extensions['babel'].instance
 
 
 def test_for_supported_locales(app: Flask, babel: Babel):
