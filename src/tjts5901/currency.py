@@ -20,10 +20,22 @@ from currency_converter import (
     CurrencyConverter,
 )
 
+from flask_babel import (
+    get_locale,
+    format_currency,
+)
+
+from babel.numbers import get_territory_currencies
+
 from flask import (
     Flask,
     current_app,
+    render_template,
 )
+
+from markupsafe import Markup
+
+from .auth import current_user
 
 
 REF_CURRENCY = 'EUR'
@@ -102,7 +114,63 @@ def init_currency(app: Flask):
     # Register the currency converter as an extension
     app.extensions['currency_converter'] = CurrencyProxy(app)
 
+    # Register the currency converter as a template filter
+    app.add_template_filter(format_converted_currency, name='localcurrency')
+
     app.cli.add_command(update_currency_rates)
+
+
+def format_converted_currency(value, currency=None, **kwargs):
+    """
+    Render a currency value in the preferred currency.
+
+    This function renders a currency value in the preferred currency for the
+    current locale. If the preferred currency is not the reference currency,
+    the value is converted to the preferred currency.
+    """
+
+    if currency is None:
+        currency = get_preferred_currency()
+
+    # Convert the value to the preferred currency
+    local_value = convert_currency(value, currency)
+
+    # Format the value
+    html = render_template("money-tag.html",
+                           base_amount=format_currency(value, currency=REF_CURRENCY, format_type='name', **kwargs),
+                           local_amount=format_currency(local_value, currency=currency, **kwargs))
+    return Markup(html)
+
+
+def convert_currency(value, currency=None, from_currency=REF_CURRENCY):
+    """
+    Convert a currency value to the preferred currency.
+
+    This function converts a currency value to the preferred currency for the
+    current locale. If the preferred currency is not the reference currency,
+    the value is converted to the preferred currency.
+    """
+
+    if currency != REF_CURRENCY:
+        return current_app.extensions['currency_converter'].convert(value, from_currency, currency)
+
+    return value
+
+
+def get_preferred_currency():
+    """
+    Get the preferred currency.
+
+    This function returns the preferred currency for the current locale.
+
+    :return: The preferred currency.
+    """
+
+    if current_user.is_authenticated and current_user.currency:
+        return str(current_user.currency)
+
+    # Fall back to the default currency for the locale
+    return get_territory_currencies(get_locale().territory)[0]
 
 
 @click.command()

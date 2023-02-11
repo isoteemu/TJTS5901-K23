@@ -46,10 +46,10 @@
                   {% endif %}
               </td>
               <td>{{ item.description }}</td>
-              <td>{{ item.starting_bid }}</td>
+              <td>{{ item.starting_bid|localcurrency }}</td>
               <td>{{ item.seller.email }}</td>
-              <td>{{ item.created_at }}</td>
-              <td>{{ item.closes_at }}</td>
+              <td>{{ item.created_at|datetimeformat }}</td>
+              <td>{{ item.closes_at|datetimeformat }}</td>
             </tr>
             {% endfor %}
           </tbody>
