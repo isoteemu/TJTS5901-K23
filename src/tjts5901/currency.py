@@ -10,6 +10,7 @@ To update the currency conversion rates, run the following command:
 
 """
 
+from decimal import Decimal
 import logging
 from pathlib import Path
 from zipfile import ZipFile
@@ -25,7 +26,7 @@ from flask_babel import (
     format_currency,
 )
 
-from babel.numbers import get_territory_currencies
+from babel.numbers import get_territory_currencies, parse_decimal
 
 from flask import (
     Flask,
@@ -155,6 +156,28 @@ def convert_currency(value, currency=None, from_currency=REF_CURRENCY):
         return current_app.extensions['currency_converter'].convert(value, from_currency, currency)
 
     return value
+
+
+def convert_from_currency(value, currency) -> Decimal:
+    """
+    Parses the localized currency value and converts it to the reference currency.
+    """
+
+    locale = get_locale()
+    amount = parse_decimal(value, locale=locale)
+
+    if currency != REF_CURRENCY:
+        amount = Decimal(current_app.extensions['currency_converter'].convert(amount, currency, REF_CURRENCY))
+
+    return amount
+
+
+def get_currencies():
+    """
+    Get the list of supported currencies.
+    """
+
+    return current_app.extensions['currency_converter'].currencies
 
 
 def get_preferred_currency():

@@ -4,11 +4,21 @@ from typing import Optional
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for
 )
-from flask_babel import _
+from flask_babel import _, get_locale
 from werkzeug.exceptions import abort
+
+from markupsafe import Markup
 
 from .auth import login_required, current_user
 from .models import Bid, Item
+from .currency import (
+    convert_currency,
+    format_converted_currency,
+    convert_from_currency,
+    get_currencies,
+    get_preferred_currency,
+    REF_CURRENCY,
+)
 
 bp = Blueprint('items', __name__)
 
@@ -99,13 +109,16 @@ def sell():
     if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
-        starting_bid = int(request.form['starting_bid'])
+        
+        currency = request.form.get('currency', REF_CURRENCY)
+        starting_bid = convert_from_currency(request.form['starting_bid'], currency)
+
         error = None
 
         if not title:
             error = 'Title is required.'
         if not starting_bid or starting_bid < 1:
-            error = 'Starting bid must be greater than 0.'
+            error = Markup(_("Starting bid must be greater than %(amount)s.", amount=format_converted_currency(1, currency)))
 
         if error is None:
             try:
@@ -118,6 +131,8 @@ def sell():
 
                 )
                 item.save()
+                flash(_('Item listed successfully!'))
+
             except Exception as exc:
                 error = _("Error creating item: %(exc)s", exc=exc)
                 logger.warning("Error creating item: %s", exc, exc_info=True, extra={
@@ -128,10 +143,16 @@ def sell():
             else:
                 return redirect(url_for('items.index'))
 
-            print(error)
-            flash(error, category='error')
+        print(error)
+        flash(error, category='error')
 
-    return render_template('items/sell.html')
+    # Get the list of currencies, and map them to their localized names
+    currencies = {}
+    names = get_locale().currencies
+    for currency in get_currencies():
+        currencies[currency] = names.get(currency, currency)
+
+    return render_template('items/sell.html', currencies=currencies, default_currency=get_preferred_currency())
 
 
 @bp.route('/item/<id>')
@@ -148,13 +169,19 @@ def view(id):
     winning_bid = get_winning_bid(item)
     min_bid = get_item_price(item)
 
+    local_currency = get_preferred_currency()
+    local_min_bid = convert_currency(min_bid, local_currency)
+
     if item.closes_at < datetime.utcnow() and winning_bid.bidder == current_user:
         flash(_("Congratulations! You won the auction!"))
     elif item.closes_at < datetime.utcnow() + timedelta(hours=1):
         # Dark pattern to show enticing message to user
         flash(_("This item is closing soon! Act now! Now! Now!"))
 
-    return render_template('items/view.html', item=item, min_bid=min_bid)
+    return render_template('items/view.html',
+                           item=item, min_bid=min_bid,
+                           local_min_bid=local_min_bid,
+                           local_currency=local_currency)
 
 
 @bp.route('/item/<id>/update', methods=('GET', 'POST'))
@@ -220,10 +247,14 @@ def bid(id):
 
     item = Item.objects.get_or_404(id=id)
     min_amount = get_item_price(item)
-    amount = int(request.form['amount'])
+
+    local_amount = request.form['amount']
+    currency = request.form.get('currency', REF_CURRENCY)
+
+    amount = convert_from_currency(local_amount, currency)
 
     if amount < min_amount:
-        flash(_("Bid must be at least %(min_amount)s", min_amount=min_amount))
+        flash(_("Bid must be at least %(min_amount)s", min_amount=format_converted_currency(min_amount)))
         return redirect(url_for('items.view', id=id))
 
     if item.closes_at < datetime.utcnow():

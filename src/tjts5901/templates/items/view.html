@@ -45,20 +45,21 @@
                                     {{ _("Starting bid") }}
                                 </div>
                                 <div class="col-sm-8">
-                                    <strong>{{ min_bid|currencyformat("EUR") }}</strong>
+                                    <strong>{{ min_bid|localcurrency }}</strong>
                                 </div>
                             </div>
                             <form action="{{ url_for('items.bid', id=item.id)}}" method="post">
+                                <input type="hidden" name="currency" value="{{ local_currency }}">
                                 <div class="form-group row">
                                     <label for="bid" class="col-sm-3 col-form-label">Your bid</label>
                                     <div class="col-sm-6">
                                         <label class="sr-only" for="bid">{{_("Bid amount")}}</label>
                                         <div class="input-group">
-                                            <input type="number" name="amount" class="" id="bid" placeholder="Bid amount" min="{{ min_bid }}" required> &euro;
+                                            <input type="number" name="amount" class="" id="bid" placeholder="Bid amount" required step="0.01">
                                         </div>
 
                                         <small class="form-text text-muted">
-                                            {{ _("Minimum bid is %(min_bid)s", min_bid=min_bid|currencyformat("EUR")) }}
+                                            {{ _("Minimum bid is %(min_bid)s", min_bid=min_bid|localcurrency) }}
                                         </small>
                                     </div>
                                     <div class="col-sm-3">

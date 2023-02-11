@@ -19,9 +19,19 @@
                         <label for="description">{{ _("Description") }}</label>
                         <textarea name="description" id="description" class="form-control">{{ request.form['body'] }}</textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="starting_bid">{{ _("Starting Bid") }}</label>
-                        <input type="number" name="starting_bid" id="starting_bid" min="0" class="form-control">
+                    <div class="row">
+                        <div class="form-group col-8">
+                            <label for="starting_bid">{{ _("Starting Bid") }}</label>
+                            <input type="number" name="starting_bid" id="starting_bid" min="0" class="form-control">
+                        </div>
+                        <div class="form-group col-4">
+                            <label for="starting_bid">{{ _("Currency") }}</label>
+                            <select name="currency" id="currency" class="form-control">
+                                {% for code, name in currencies.items() %}
+                                    <option value="{{ code }}" {% if code == default_currency %}selected{% endif %}>{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary btn-block">{{ _("Add to listing") }}</button>
