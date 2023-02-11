@@ -1,17 +1,13 @@
-# Finnish (Finland) translations for TJTS5901-K23 Template.
-# Copyright (C) 2023 University of Jyväskylä
-# This file is distributed under the same license as the project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
-#
+
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version:  TJTS5901-K23\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2023-02-11 15:39+0000\n"
-"PO-Revision-Date: 2023-02-04 21:51+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: fi_FI\n"
-"Language-Team: fi_FI <LL@li.org>\n"
+"Language: sv\n"
+"Language-Team: sv <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -20,297 +16,296 @@ msgstr ""
 
 #: src/tjts5901/app.py:42
 msgid "Hill Valley DMC dealership"
-msgstr "Hill Valley DMC -liike"
+msgstr "Hill Valley DMC återförsäljare"
 
 #: src/tjts5901/app.py:74 tests/test_i18n.py:77 tests/test_i18n.py:101
 msgid "Hello, World!"
-msgstr "Hei Maailma!"
+msgstr "Hej världen!"
 
-# python-format
 #: src/tjts5901/items.py:121
 #, python-format
 msgid "Starting bid must be greater than %(amount)s."
-msgstr "Huudon tulee olla vähintään %(amount)s"
+msgstr "Budet måste vara minst %(amount)s"
 
 #: src/tjts5901/items.py:134
+#, fuzzy
 msgid "Item listed successfully!"
-msgstr "Tuote poistettu onnistuneesti!"
+msgstr "Föremålet har tagits bort framgångsrikt!"
 
 #: src/tjts5901/items.py:137
 #, python-format
 msgid "Error creating item: %(exc)s"
-msgstr "Virhe luotaessa tuotetta: %(exc)s"
+msgstr "Fel vid skapandet av objektet: %(exc)s"
 
 #: src/tjts5901/items.py:176
 msgid "Congratulations! You won the auction!"
-msgstr "Onnittelut! Voitit huutokaupan!"
+msgstr "Grattis! Du har vunnit auktionen!"
 
 #: src/tjts5901/items.py:179
 msgid "This item is closing soon! Act now! Now! Now!"
-msgstr "Tämä tuote sulkeutuu pian! Toimi nyt! Heti! Nyt!"
+msgstr "Detta objekt stänger snart! Handla nu! Nu! Nu!"
 
 #: src/tjts5901/items.py:198
 msgid "Title is required."
-msgstr "Otsikko on pakollinen."
+msgstr "Titel krävs."
 
 #: src/tjts5901/items.py:205
 #, python-format
 msgid "Error updating item: %(exc)s"
-msgstr "Virhe päivitettäessä tuotetta: %(exc)s"
+msgstr "Fel vid uppdatering av objekt: %(exc)s"
 
 #: src/tjts5901/items.py:210
 msgid "Item updated successfully!"
-msgstr "Tuote päivitetty onnistuneesti!"
+msgstr "Artikeln har uppdaterats framgångsrikt!"
 
 #: src/tjts5901/items.py:229
 #, python-format
 msgid "Error deleting item: %(exc)s"
-msgstr "Virhe poistaessa tuotetta: %(exc)s"
+msgstr "Fel vid radering av objekt: %(exc)s"
 
 #: src/tjts5901/items.py:231
 msgid "Item deleted successfully!"
-msgstr "Tuote poistettu onnistuneesti!"
+msgstr "Föremålet har tagits bort framgångsrikt!"
 
 #: src/tjts5901/items.py:257
 #, python-format
 msgid "Bid must be at least %(min_amount)s"
-msgstr "Huudon tulee olla vähintään %(min_amount)s"
+msgstr "Budet måste vara minst %(min_amount)s"
 
 #: src/tjts5901/items.py:274
 #, python-format
 msgid "Error placing bid: %(exc)s"
-msgstr "Virhe asettaessa huutoa: %(exc)s"
+msgstr "Fel i budgivningen: %(exc)s"
 
 #: src/tjts5901/items.py:276
 msgid "Bid placed successfully!"
-msgstr "Huuto asetettu onnistuneesti!"
+msgstr "Budet har placerats framgångsrikt!"
 
 #: src/tjts5901/templates/base.html:48
 msgid "Home"
-msgstr "Etusivu"
+msgstr "Hem"
 
 #: src/tjts5901/templates/base.html:51
 msgid "Sell"
-msgstr "Myy"
+msgstr "Sälja"
 
 #: src/tjts5901/templates/base.html:54
 msgid "About"
-msgstr "Tietoa"
+msgstr "Handla om"
 
 #: src/tjts5901/templates/base.html:61
 msgid "Language"
-msgstr "Kieli"
+msgstr "Språk"
 
 #: src/tjts5901/templates/base.html:72
 msgid "Log Out"
-msgstr "Kirjaudu ulos"
+msgstr "Logga ut"
 
 #: src/tjts5901/templates/base.html:74
 msgid "Register"
-msgstr "Rekisteröidy"
+msgstr "Registrera"
 
 #: src/tjts5901/templates/base.html:75
 msgid "Log In"
-msgstr "Kirjaudu sisään"
+msgstr "Logga in"
 
 #: src/tjts5901/templates/base.html:80
 msgid "Search"
-msgstr "Etsi"
+msgstr "Sök"
 
 #: src/tjts5901/templates/auth/login.html:25
 msgid "Sign in to our platform"
-msgstr "Kirjaudu palveluun"
+msgstr "Logga in på vår plattform"
 
 #: src/tjts5901/templates/auth/login.html:32
 #: src/tjts5901/templates/auth/register.html:31
 msgid "Email"
-msgstr "Sähköposti"
+msgstr "E-post"
 
 #: src/tjts5901/templates/auth/login.html:33
 msgid "Your email"
-msgstr "Sähköpostisi"
+msgstr "Din email"
 
 #: src/tjts5901/templates/auth/login.html:40
 #: src/tjts5901/templates/auth/register.html:38
 msgid "Password"
-msgstr "Salasana"
+msgstr "Lösenord"
 
 #: src/tjts5901/templates/auth/login.html:42
 msgid "Your password"
-msgstr "Salasanasi"
+msgstr "Ditt lösenord"
 
 #: src/tjts5901/templates/auth/login.html:51
 msgid "Remember me"
-msgstr "Muista minut"
+msgstr "Kom ihåg mig"
 
 #: src/tjts5901/templates/auth/login.html:54
 msgid "Lost password?"
-msgstr "Salasana unohtunut?"
+msgstr "Glömt lösenord?"
 
 #: src/tjts5901/templates/auth/login.html:57
 msgid "Login"
-msgstr "Kirjaudu"
+msgstr "Logga in"
 
 #: src/tjts5901/templates/auth/login.html:61
 msgid "Not registered?"
-msgstr "Ei vielä tunnuksia?"
+msgstr "Inte registrerad?"
 
 #: src/tjts5901/templates/auth/login.html:62
 msgid "Create an account"
-msgstr "Luo tunnus"
+msgstr "Skapa ett konto"
 
 #: src/tjts5901/templates/auth/register.html:24
 msgid "Register on our platform"
-msgstr "Rekisteröidy palveluun"
+msgstr "Registrera dig på vår plattform"
 
 #: src/tjts5901/templates/auth/register.html:42
 msgid "Confirm password"
-msgstr "Vahvista salasana"
+msgstr "Bekräfta lösenord"
 
 #: src/tjts5901/templates/auth/register.html:53
 #, python-format
 msgid "I agree to the %(terms)s"
-msgstr "Hyväksyn %(terms)s"
+msgstr "Jag godkänner %(terms)s"
 
 #: src/tjts5901/templates/auth/register.html:53
 msgid "terms and conditions"
-msgstr "käyttöehdot"
+msgstr "Villkor"
 
 #: src/tjts5901/templates/auth/register.html:58
 msgid "Register account"
-msgstr "Rekisteröi tunnus"
+msgstr "Registrera konto"
 
 #: src/tjts5901/templates/auth/register.html:62
 msgid "Already have an account?"
-msgstr "Onko sinulla jo tunnus?"
+msgstr "Har du redan ett konto?"
 
 #: src/tjts5901/templates/auth/register.html:63
 msgid "Login here"
-msgstr "Kirjaudu tästä"
+msgstr "Logga in här"
 
 #: src/tjts5901/templates/items/index.html:20
 msgid "Items on sale"
-msgstr "Myynnissä olevat tuotteet"
+msgstr "Föremål till försäljning"
 
 #: src/tjts5901/templates/items/index.html:31
 #: src/tjts5901/templates/items/sell.html:15
 #: src/tjts5901/templates/items/update.html:17
 msgid "Title"
-msgstr "Otsikko"
+msgstr "Titel"
 
 #: src/tjts5901/templates/items/index.html:32
 #: src/tjts5901/templates/items/sell.html:19
 #: src/tjts5901/templates/items/update.html:21
 msgid "Description"
-msgstr "Kuvaus"
+msgstr "Beskrivning"
 
 #: src/tjts5901/templates/items/index.html:33
 #: src/tjts5901/templates/items/sell.html:24
 msgid "Starting Bid"
-msgstr "Aloitushinta"
+msgstr "Startbud"
 
 #: src/tjts5901/templates/items/index.html:34
 msgid "Seller"
-msgstr "Myyjä"
+msgstr "Säljare"
 
 #: src/tjts5901/templates/items/index.html:35
 msgid "Created At"
-msgstr "Luotu"
+msgstr "Skapad vid"
 
 #: src/tjts5901/templates/items/index.html:36
 msgid "Closes At"
-msgstr "Sulkeutuu"
+msgstr "Stänger kl"
 
 #: src/tjts5901/templates/items/sell.html:4
 msgid "Sell an Item"
-msgstr "Lisää tuote myyntiin"
+msgstr "Sälja ett föremål"
 
 #: src/tjts5901/templates/items/sell.html:12
 msgid "Add Item"
-msgstr "Lisää tuote"
+msgstr "Lägg till vara"
 
 #: src/tjts5901/templates/items/sell.html:28
 msgid "Currency"
-msgstr "Valuutta"
+msgstr "Valuta"
 
 #: src/tjts5901/templates/items/sell.html:37
 msgid "Add to listing"
-msgstr "Lisää myyntiin"
+msgstr "Lägg till i annonsen"
 
 #: src/tjts5901/templates/items/update.html:25
 msgid "Starting Price"
-msgstr "Aloitushinta"
+msgstr "Startpris"
 
 #: src/tjts5901/templates/items/update.html:30
 msgid "Update listing"
-msgstr "Päivitä myynti-ilmoitus"
+msgstr "Uppdatera lista"
 
 #: src/tjts5901/templates/items/update.html:31
 msgid "Are you sure?"
-msgstr "Oletko varma?"
+msgstr "Är du säker?"
 
 #: src/tjts5901/templates/items/update.html:31
 msgid "Delete"
-msgstr "Poista"
+msgstr "Radera"
 
 #: src/tjts5901/templates/items/view.html:21
 #, python-format
 msgid "%(item)s by %(seller)s"
-msgstr "%(item)s, myyjänä %(seller)s"
+msgstr "%(item)s av %(seller)s"
 
 #: src/tjts5901/templates/items/view.html:27
 msgid "Closes at"
-msgstr "Sulkeutuu"
+msgstr "Stänger kl."
 
 #: src/tjts5901/templates/items/view.html:35
 msgid "Added at"
-msgstr "Lisätty"
+msgstr "Tillagd på"
 
 #: src/tjts5901/templates/items/view.html:45
 msgid "Starting bid"
-msgstr "Aloitushinta"
+msgstr "Startbud"
 
 #: src/tjts5901/templates/items/view.html:56
 msgid "Bid amount"
-msgstr "Tarjous"
+msgstr "Budbelopp"
 
 #: src/tjts5901/templates/items/view.html:62
 #, python-format
 msgid "Minimum bid is %(min_bid)s"
-msgstr "Vähimmäistarjous on %(min_bid)s"
+msgstr "Minsta bud är %(min_bid)s"
 
 #: src/tjts5901/templates/items/view.html:66
 msgid "Bid"
-msgstr "Tarjoa"
+msgstr "Anbud"
 
 #: src/tjts5901/templates/items/view.html:73
-#, fuzzy
 msgid "Item is no longer at sale."
-msgstr "Myynnissä olevat tuotteet"
+msgstr "Föremålet är inte längre till salu."
 
 #: src/tjts5901/templates/items/view.html:73
 msgid "Next time, act faster!"
-msgstr "Jatkossa toimi nopeammin!"
+msgstr "Nästa gång, agera snabbare!"
 
 #: src/tjts5901/templates/items/view.html:81
 #, python-format
 msgid "%(icon)s Contact seller"
-msgstr "%(icon)s Ota yhteyttä myyjään"
+msgstr "%(icon)s Kontakta säljaren"
 
 #: src/tjts5901/templates/items/view.html:82
 #, python-format
 msgid "%(icon)s Call seller"
-msgstr "%(icon)s Soita myyjälle"
+msgstr "%(icon)s Ring till säljaren"
 
 #: src/tjts5901/templates/items/view.html:97
 msgid "Elon-senpai notice me!"
-msgstr "Elon-senpai huomioi minut!"
+msgstr "Elon-senpai lägger märke till mig!"
 
 #: src/tjts5901/templates/items/view.html:101
 msgid "Zuckdaddy, you so alpha!"
-msgstr "Zuckdaddy, olet niin alpha!"
+msgstr "Zuckdaddy, du är så alfa!"
 
 #: src/tjts5901/templates/items/view.html:105
 msgid "Email to a friend"
-msgstr "Lähetä ystävälle"
+msgstr "Skicka e-post till en vän"
 

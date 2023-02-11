@@ -62,6 +62,9 @@ RUN pip --disable-pip-version-check install -v -e .
 ARG CI_COMMIT_SHA
 ENV CI_COMMIT_SHA=${CI_COMMIT_SHA}
 
+## Download the currency exchange rates from European Central Bank
+RUN flask update-currency-rates
+
 ## Save build date and time
 RUN echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> /app/.env
 

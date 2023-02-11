@@ -9,6 +9,8 @@ flask-babel
 
 flask-mongoengine==1.0
 
+CurrencyConverter
+
 # Git hooks
 pre-commit
 
