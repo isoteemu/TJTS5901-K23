@@ -3,13 +3,14 @@ Internationalisation and localisation support for the application.
 """
 from enum import Enum
 from typing import List
-from flask_babel import Babel
+from flask_babel import Babel, get_locale as get_babel_locale
 from babel import Locale
 from babel import __version__ as babel_version
 from flask import (
     Flask,
     g,
     request,
+    session,
 )
 
 import logging
@@ -54,6 +55,28 @@ def init_babel(flask_app: Flask):
 
     babel = Babel(flask_app, locale_selector=get_locale)
 
+    # Register `locales` as jinja variable to be used in templates. Uses the
+    # `Locale` class from the Babel library, so that the locale names can be
+    # translated.
+    locales = {}
+    for locale in SupportedLocales:
+        locales[locale.value] = Locale.parse(locale.value)
+
+    flask_app.jinja_env.globals.update(locales=locales)
+    # Register `get_locale` as jinja function to be used in templates
+    flask_app.jinja_env.globals.update(get_locale=get_babel_locale)
+
+    # If url contains locale parameter, set it as default in session
+    @flask_app.before_request
+    def set_locale():
+        if request.endpoint != "static":
+            if locale := request.args.get('locale'):
+                if locale in (str(l) for l in locales.values()):
+                    logger.debug("Setting locale %s from URL.", locale)
+                    session['locale'] = locale
+                else:
+                    logger.warning("Locale %s not supported.", locale)
+
     logger.info("Initialized Flask-Babel extension %s.", babel_version,
                 extra=flask_app.config.get_namespace("BABEL_"))
 
@@ -73,6 +96,11 @@ def get_locale():
 
     :return: Suitable locale for the user.
     """
+
+    # if a locale was stored in the session, use that
+    if locale := session.get('locale'):
+        logger.debug("Setting locale %s from session.", locale)
+        return locale
 
     # if a user is logged in, use the locale from the user settings
     user = getattr(g, 'user', None)
