@@ -21,13 +21,15 @@ from tjts5901.i18n import SupportedLocales
 from tjts5901 import __file__ as pkg_file
 
 @pytest.fixture
-def babel(app: Flask) -> Babel:
+def babel(app: Flask):
     """
     Babel translation fixture.
 
     Returns babel tranlaslation fixture registered in flask app
     """
-    yield app.extensions['babel'].instance
+    with app.app_context():
+        yield app.extensions['babel'].instance
+    
 
 
 def test_for_supported_locales(app: Flask, babel: Babel):
@@ -99,7 +101,7 @@ def test_app_language_detection(client, babel):
 
         response = client.get('/hello', headers={'Accept-Language': locale.language})
         resp_as_string = response.data.decode('utf-8')
-        assert gettext("Hello, World!") != resp_as_string, f"Message is not translated for language {locale.language}"
+        assert gettext("Hello, World!") == resp_as_string, f"Message is not translated for language {locale.language}"
 
 
 @pytest.fixture(scope="session")
