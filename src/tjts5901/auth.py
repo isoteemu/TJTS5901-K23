@@ -52,6 +52,30 @@ def load_logged_in_user(user_id):
     return user
 
 
+def get_user_by_email(email: str) -> User:
+    """
+    Get a user from the database, given the user's email.
+
+    If the email is 'me', then the current user is returned.
+
+    :param email: The email of the user to get.
+    """
+
+    if email is None:
+        abort(404)
+
+    if email == "me" and current_user.is_authenticated:
+        email = current_user.email
+
+    try:
+        user = User.objects.get_or_404(email=email)
+    except DoesNotExist:
+        logger.error("User not found: %s", email)
+        abort(404)
+
+    return user
+
+
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
@@ -152,10 +176,8 @@ def profile(email):
 
     If the email is 'me', then the current user's profile is shown.
     """
-    if email == 'me':
-        email = current_user.email
 
-    user: User = User.objects.get_or_404(email=email)
+    user: User = get_user_by_email(email)
 
     # List the items user has created
     items = Item.objects(seller=user).all()
