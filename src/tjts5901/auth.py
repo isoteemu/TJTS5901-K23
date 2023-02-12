@@ -1,3 +1,4 @@
+from datetime import datetime
 import functools
 import logging
 
@@ -11,11 +12,11 @@ from flask_login import (
     login_required,
     current_user,
 )
-
+from flask_babel import _
 from werkzeug.security import check_password_hash, generate_password_hash
 from sentry_sdk import set_user
 
-from .models import User, Item
+from .models import AccessToken, User, Item
 
 from mongoengine import DoesNotExist
 
@@ -183,3 +184,40 @@ def profile(email):
     items = Item.objects(seller=user).all()
 
     return render_template('auth/profile.html', user=user, items=items)
+
+
+@bp.route('/profile/<email>/token', methods=('GET', 'POST'))
+@login_required
+def user_access_tokens(email):
+    """
+    Show the user's tokens page for the given email.
+    """
+
+    user: User = get_user_by_email(email)
+
+    token = None
+    if request.method == 'POST':
+        try:
+            name = request.form['name']
+
+            if expires := request.form.get('expires'):
+                expires = datetime.fromisoformat(expires)
+            else:
+                expires = None
+
+            token = AccessToken(
+                user=user,
+                name=name,
+                expires=expires,
+            )
+            token.save()
+        except KeyError as exc:
+            logger.debug("Missing required field: %s", exc)
+            flash(_("Required field missing"))
+        except Exception as exc:
+            logger.exception("Error creating token: %s", exc)
+            flash(_("Error creating token: %s") % exc)
+        else:
+            flash(_("Created token: %s") % token.name)
+
+    return render_template('auth/tokens.html', user=user, token=token)
