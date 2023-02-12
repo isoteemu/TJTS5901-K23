@@ -368,5 +368,5 @@ def api_item_place_bid(id):
 
     return jsonify({
         'success': True,
-        'bid': bid.to_json()
+        'bid': bid.to_mongo().to_dict()
     })
