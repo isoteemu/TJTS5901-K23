@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import logging
 from typing import Optional
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for, jsonify
 )
 from flask_babel import _, get_locale
 from werkzeug.exceptions import abort
@@ -21,6 +21,7 @@ from .currency import (
 )
 
 bp = Blueprint('items', __name__)
+api = Blueprint('api_items', __name__, url_prefix='/api/items')
 
 logger = logging.getLogger(__name__)
 
@@ -276,3 +277,96 @@ def bid(id):
         flash(_("Bid placed successfully!"))
 
     return redirect(url_for('items.view', id=id))
+
+
+@api.route('<id>/bids', methods=('GET',))
+@login_required
+def api_item_bids(id):
+    """
+    Get the bids for an item.
+
+    :param id: The id of the item to get bids for.
+    :return: A JSON response containing the bids.
+    """
+
+    item = Item.objects.get_or_404(id=id)
+    bids = []
+    for bid in Bid.objects(item=item).order_by('-amount'):
+        bids.append(bid.to_json())
+
+    return jsonify({
+        'success': True,
+        'bids': bids
+    })
+
+@api.route('<id>/bids', methods=('POST',))
+@login_required
+def api_item_place_bid(id):
+    """
+    Place a bid on an item.
+
+    If the bid is valid, create a new bid and return the bid.
+    Otherwise, return an error message.
+    
+    Only accepts `REF_CURRENCY` bids.
+
+    :param id: The id of the item to bid on.
+    :return: A JSON response containing the bid.
+    """
+
+    item = Item.objects.get_or_404(id=id)
+    min_amount = get_item_price(item)
+
+    try:
+        amount = int(request.form['amount'])
+    except KeyError:
+        return jsonify({
+            'success': False,
+            'error': _("Missing required argument %(argname)s", argname='amount')
+        })
+    except ValueError:
+        return jsonify({
+            'success': False,
+            'error': _("Invalid value for argument %(argname)s", argname='amount')
+        })
+    except Exception as exc:
+        return jsonify({
+            'success': False,
+            'error': _("Error parsing argument %(argname)s: %(exc)s", argname='amount', exc=exc)
+        })
+
+    if amount < min_amount:
+        return jsonify({
+            'success': False,
+            'error': _("Bid must be at least %(min_amount)s", min_amount=min_amount)
+        })
+
+    if item.closes_at < datetime.utcnow():
+        return jsonify({
+            'success': False,
+            'error': _("This item is no longer on sale.")
+        })
+
+    try:
+        bid = Bid(
+            item=item,
+            bidder=current_user,
+            amount=amount,
+        )
+        bid.save()
+    except Exception as exc:
+        logger.error("Error placing bid: %s", exc, exc_info=True, extra={
+            'item_id': item.id,
+            'bidder_id': current_user.id,
+            'amount': amount,
+        })
+
+        return jsonify({
+            'success': False,
+            'error': _("Error placing bid: %(exc)s", exc=exc)
+        })
+
+    return jsonify({
+        'success': True,
+        'bid': bid.to_json()
+    })

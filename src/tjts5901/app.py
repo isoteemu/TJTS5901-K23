@@ -81,6 +81,7 @@ def create_app(config: Optional[Dict] = None) -> Flask:
 
     from . import items
     flask_app.register_blueprint(items.bp)
+    flask_app.register_blueprint(items.api)
     flask_app.add_url_rule('/', endpoint='index')
 
     return flask_app
