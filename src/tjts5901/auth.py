@@ -35,9 +35,43 @@ def init_auth(app):
     login_manager.login_view = 'auth.login'
     login_manager.user_loader(load_logged_in_user)
 
+    app.config['AUTH_HEADER_NAME'] = 'Authorization'
+    login_manager.request_loader(load_user_from_request)
+
     login_manager.init_app(app)
 
     logger.debug("Initialized authentication")
+
+
+def load_user_from_request(request):
+    """
+    Load a user from the request.
+
+    This function is used by Flask-Login to load a user from the request.
+    """
+    api_key = request.headers.get("Authorization")
+
+    if api_key:
+        api_key = api_key.replace("Bearer ", "", 1)
+        try:
+            token = AccessToken.objects.get(token=api_key)
+            if token.expires and token.expires < datetime.utcnow():
+                logger.warning("Token expired: %s", api_key)
+                return None
+            # User is authenticated
+
+            token.last_used_at = datetime.utcnow()
+            token.save()
+            logger.debug("User authenticated via token: %r", token.user.email, extra={
+                "user": token.user.email,
+                "user_id": str(token.user.id),
+                "token": token.token,
+            })
+            return token.user
+        except DoesNotExist:
+            logger.error("Token not found: %s", api_key)
+
+    return None
 
 
 def load_logged_in_user(user_id):

@@ -137,6 +137,9 @@ class AccessToken(db.Document):
     token = StringField(required=True, unique=True, default=token_urlsafe)
     "The token string."
 
+    last_used_at = DateTimeField(required=False)
+    "Date and time that the token was last used."
+
     created_at = DateTimeField(required=True, default=datetime.utcnow)
     "Date and time that the token was created."
 
