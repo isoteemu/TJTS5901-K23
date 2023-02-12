@@ -57,5 +57,50 @@
         </div>
     </div>
 </div>
-  
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-4">
+            <h2 class="text-center mb-4">{{ _("Active Access Tokens") }}</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ _("Token name") }}</th>
+                        <th>{{ _("Created") }}</th>
+                        <th>{{ _("Last used") }}</th>
+                        <th>{{ _("Expires") }}</th>
+                        <th>{{ _("Actions") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for access_token in tokens %}
+                    <tr>
+                        <td>{{ access_token.name }}</td>
+                        <td>{{ access_token.created_at|dateformat }}</td>
+                        <td>
+                            {% if access_token.last_used_at %}
+                                {{ access_token.last_used_at|dateformat }}
+                            {% else %}{{ _("Never") }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if access_token.expires_at %}
+                                {{ access_token.expires_at|dateformat }}
+                            {% else %}{{ _("Never") }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('auth.delete_user_access_token', email='me', id=access_token.id) }}"
+                                method="post">
+                                <button type="submit" class="btn btn-danger">{{ _("Delete") }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

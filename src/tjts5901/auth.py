@@ -19,6 +19,7 @@ from sentry_sdk import set_user
 from .models import AccessToken, User, Item
 
 from mongoengine import DoesNotExist
+from mongoengine.queryset.visitor import Q
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 logger = logging.getLogger(__name__)
@@ -194,6 +195,8 @@ def user_access_tokens(email):
     """
 
     user: User = get_user_by_email(email)
+    # Fetch all the user tokens that are active or have no expire date
+    tokens = AccessToken.objects(Q(expires__gte=datetime.now()) | Q(expires=None), user=user).all()
 
     token = None
     if request.method == 'POST':
@@ -220,4 +223,26 @@ def user_access_tokens(email):
         else:
             flash(_("Created token: %s") % token.name)
 
-    return render_template('auth/tokens.html', user=user, token=token)
+    return render_template('auth/tokens.html', user=user, tokens=tokens, token=token)
+
+
+@bp.route('/profile/<email>/token/<id>', methods=('POST',))
+def delete_user_access_token(email, id):
+    """
+    Delete an access token.
+    """
+    user = get_user_by_email(email)
+    token = AccessToken.objects.get_or_404(id=id)
+
+    if token.user != user:
+        logger.warning("User %s tried to delete token %s", user.email, token.name, extra={
+            "user": user.email,
+            "token": str(token.id),
+            "token_user": token.user.email,
+        })
+        abort(403)
+
+    token.delete()
+
+    flash(f"Deleted token {token.name}")
+    return redirect(url_for('auth.user_access_tokens', email=token.user.email))
