@@ -1,4 +1,5 @@
 from datetime import datetime
+from secrets import token_urlsafe
 
 from .db import db
 
@@ -110,3 +111,34 @@ class Bid(db.Document):
 
     created_at = DateTimeField(required=True, default=datetime.utcnow)
     "Date and time that the bid was placed."
+
+
+class AccessToken(db.Document):
+    """
+    Access token for a user.
+
+    This is used to authenticate API requests.
+    """
+
+    meta = {"indexes": [
+        {"fields": [
+            "token",
+            "user",
+            "expires",
+        ]}
+    ]}
+
+    name = StringField(max_length=100, required=True)
+    "Human-readable name for the token."
+
+    user = ReferenceField(User, required=True)
+    "User that the token is for."
+
+    token = StringField(required=True, unique=True, default=token_urlsafe)
+    "The token string."
+
+    created_at = DateTimeField(required=True, default=datetime.utcnow)
+    "Date and time that the token was created."
+
+    expires = DateTimeField(required=False)
+    "Date and time that the token expires."
