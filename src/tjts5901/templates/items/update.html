@@ -28,7 +28,7 @@
                         <div class="form-group">
                             <div class="d-flex justify-content-end">
                                 <button name="action" value="update" class="btn btn-primary border-dark">{{ _("Update listing") }}</button>
-                                <button name="action" form="delete-form" value="delete" class="btn btn-danger" onclick="return confirm({{ _("Are you sure?")|json }});">{{ _("Delete") }}</button>
+                                <button name="action" form="delete-form" value="delete" class="btn btn-danger" onclick="return confirm({{ _("Are you sure?")|tojson }});">{{ _("Delete") }}</button>
                             </div>
                         </div>
                     </form>
