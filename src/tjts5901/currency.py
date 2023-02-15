@@ -194,9 +194,13 @@ def get_preferred_currency():
 
     # Fall back to the default currency for the locale
     if territory := get_locale().territory:
-        return get_territory_currencies(territory)[0]
-    else:
-        return REF_CURRENCY
+        currency = get_territory_currencies(territory)[0]
+        if currency in get_currencies():
+            return currency
+        else:
+            logger.warning("Default currency %s is not supported, falling back to %s.", currency, REF_CURRENCY)
+
+    return REF_CURRENCY
 
 
 @click.command()
