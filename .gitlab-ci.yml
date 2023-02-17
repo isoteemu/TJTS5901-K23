@@ -62,7 +62,10 @@ sast:
 test:
   ## Optional: include stage and environment name
   stage: test
-  image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+  image:
+    name: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+    pull_policy: always
+
   variables:
     ## Setup variable pointin to mongo service
     ## Notice: the `mongo` address might not work.
@@ -148,7 +151,10 @@ deploy to staging:
 ## Run smoketest to check that staging app is responding as expected.
 staging smoketest:
     stage: smoketest
-    image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+    image:
+        name: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+        pull_policy: always
+
     environment:
         name: staging
         url: https://${AZURE_APP_NAME}-${CI_ENVIRONMENT_SLUG}.azurewebsites.net
