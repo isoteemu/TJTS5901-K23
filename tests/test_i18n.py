@@ -27,7 +27,6 @@ def babel(app: Flask):
 
     Returns babel tranlaslation fixture registered in flask app
     """
-    return pytest.skip("Skipping tests failing on pipeline for now.")
     with app.app_context():
         yield app.extensions['babel'].instance
 
