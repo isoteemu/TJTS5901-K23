@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Access tokens{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>{{_("Personal Access Tokens")}}</h4>
+            <p>
+                {%trans%}Personal access tokens allow third-party services to authenticate with our application on your behalf.{%endtrans%}
+            </p>
+        </div>
+        <div class="col-md-8">
+            {% if token %}
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">{{_("Your new personal access token")}}</h4>
+                <p>
+                    {%trans%}Your new personal access token is shown below. You may now use this token to make API requests.{%endtrans%}
+                </p>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="token" value="{{ token.token }}" readonly>
+                    <button class="btn btn-outline-secondary" type="button" id="copy-token" onclick="copyToken()">{{_("Copy")}}</button>
+                    <script>
+                        function copyToken() {
+                            var copyText = document.getElementById("token");
+                            copyText.select();
+                            copyText.setSelectionRange(0, 99999);
+                            document.execCommand("copy");
+                        }
+                    </script>
+                </div>
+                <small class="form-text text-muted">{{ _("Make sure to copy your new token now. You won't be able to see it again!") }}</small>
+                <hr>
+            </div>
+            {% endif %}
+            <div class="card">
+                <div class="card-header">
+                    <div class="text-center">{{ _("Create access token") }}</div>
+                </div>
+                <form action="{{url_for('auth.user_access_tokens', email='me')}}" method="post" class="card-body">
+                    <div class="form-group">
+                        <label for="name">{{ _("Name") }}</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="{{ _(" Enter token name") }}">
+                        <div class="form-text text-muted">{{ _("Give your token a descriptive name so you can easily identify it in the future.") }}</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-check-label" for="expires">{{ _("Expires at") }}</label>
+                        <input type="date" class="form-control" name="expires" id="expires">
+                        <div class="form-text text-muted">{{ _("Leave blank to never expire.") }}</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">{{ _("Create access token") }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-4">
+            <h2 class="text-center mb-4">{{ _("Active Access Tokens") }}</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>{{ _("Token name") }}</th>
+                        <th>{{ _("Created") }}</th>
+                        <th>{{ _("Last used") }}</th>
+                        <th>{{ _("Expires") }}</th>
+                        <th>{{ _("Actions") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for access_token in tokens %}
+                    <tr>
+                        <td>{{ access_token.name }}</td>
+                        <td>{{ access_token.created_at|dateformat }}</td>
+                        <td>
+                            {% if access_token.last_used_at %}
+                                {{ access_token.last_used_at|dateformat }}
+                            {% else %}{{ _("Never") }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if access_token.expires_at %}
+                                {{ access_token.expires_at|dateformat }}
+                            {% else %}{{ _("Never") }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('auth.delete_user_access_token', email='me', id=access_token.id) }}"
+                                method="post">
+                                <button type="submit" class="btn btn-danger">{{ _("Delete") }}</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
