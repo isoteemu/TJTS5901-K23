@@ -1,6 +1,9 @@
 from os import environ
 import pytest
 from flask import Flask
+from faker import Faker
+from werkzeug.security import generate_password_hash
+
 
 from tjts5901.app import create_app
 
@@ -30,7 +33,7 @@ def pytest_addoption(parser: pytest.Parser):
                      default=environ.get("CI_ENVIRONMENT_URL"))
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def app():
     """
     Application fixture.
@@ -70,4 +73,46 @@ def app():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def faker_session_locale(app: Flask):
+    """
+    Fixture to set faker locale.
+
+    This fixture is autouse, so it will be applied to all tests.
+    """
+    languages = []
+    with app.app_context():
+        for locale in app.extensions['babel'].instance.list_translations():
+            languages.append(str(locale))
+
+    return languages
+
+
+@pytest.fixture()
+def user(app: Flask, faker: Faker):
+    """
+    User fixture.
+
+    Creates a user into database and returns it.
+    """
+
+    from tjts5901.models import User
+
+    print(faker.locales[0])
+
+    with app.app_context():
+        password = faker.password()
+        user = User(
+            email=faker.email(),
+            password=generate_password_hash(password),
+            locale=f"{faker.locales[0]}.UTF-8",
+        )
+        user.save()
+        setattr(user, '_plaintext_password', password)
+
+        yield user
+
+        user.delete()
 
