@@ -6,8 +6,8 @@ import dataclasses
 from datetime import datetime
 import logging
 
-from flask import get_flashed_messages, Blueprint
-from flask_login import current_user
+from flask import get_flashed_messages, jsonify, Blueprint
+from flask_login import current_user, login_required
 from flask_babel import force_locale, lazy_gettext
 
 from .models import Notification, User
@@ -91,3 +91,23 @@ def get_notifications(user: User = current_user) -> list[Message]:
     notifications.update(read_at=datetime.utcnow())
 
     return messages
+
+
+@bp.route('/notifications.json', methods=('GET',))
+@login_required
+def user_notifications():
+    """
+    Show the form to send a message to the given user.
+    """
+
+    user = current_user
+
+    # Convert the notifications to a list of dictionaries
+    notifications = []
+    for notification in get_notifications(user):
+        notifications.append(dataclasses.asdict(notification))
+
+    return jsonify({
+        "success": True,
+        "notifications": notifications,
+    })
