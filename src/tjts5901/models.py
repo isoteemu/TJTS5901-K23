@@ -30,7 +30,7 @@ class User(UserMixin, db.Document):
 
     password = StringField(required=True)
 
-    locale = EnumField(SupportedLocales)
+    locale = StringField(default=SupportedLocales.EN.value)
     currency = StringField(max_length=3)
     "The user's preferred currency."
 
