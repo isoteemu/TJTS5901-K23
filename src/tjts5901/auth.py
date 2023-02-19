@@ -16,7 +16,7 @@ from flask_babel import _
 from werkzeug.security import check_password_hash, generate_password_hash
 from sentry_sdk import set_user
 
-from .models import AccessToken, User, Item
+from .models import AccessToken, Bid, User, Item
 
 from mongoengine import DoesNotExist
 from mongoengine.queryset.visitor import Q
@@ -218,7 +218,12 @@ def profile(email):
     # List the items user has created
     items = Item.objects(seller=user).all()
 
-    return render_template('auth/profile.html', user=user, items=items)
+    # List the items user has won
+    # TODO: Could be done smarter with a join
+    bids = Bid.objects(bidder=user).only("id").all()
+    won_items = Item.objects(winning_bid__in=bids).all()
+
+    return render_template('auth/profile.html', user=user, items=items, won_items=won_items)
 
 
 @bp.route('/profile/<email>/token', methods=('GET', 'POST'))

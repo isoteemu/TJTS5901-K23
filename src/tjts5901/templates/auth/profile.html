@@ -2,18 +2,20 @@
 
 {% block header %}
     <div class="container">
-        <h1>{% block title %}{{user.email}}'s' Profile Page{% endblock %}</h1>
+        <h1>{% block title %}{{user|striptags}}'s' Profile Page{% endblock %}</h1>
     </div>
 {% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row">
-    <div class="col-sm-3"></div>
+        <div class="col-sm-2 offset-sm-2">
+            <img src="{{ user.image_url }}" class="img-fluid" alt="{{_("Profile image for %(email)s", email=user.email)|e}}" style="max-width: 100%">
+        </div>
         <div class="col-sm-6 profile-section">
             <div class="card card-secondary">
                 <div class="card-header text-center">
-                    <span>{{ user.email }}</span>
+                    {{ user }}
                 </div>
                 <div class="card-body">
                     <div class="form-group d-flex align-items-center justify-content-between">
@@ -29,9 +31,64 @@
                 </div>
             </div>
         </div>
-    <div class="col-sm-3"></div>
-
   </div>
+
+  <section class="row">
+    <div class="col-md-10 offset-md-1 purchases">
+        <h3> {{ _("My items") }} </h3>
+
+        <div class="container">
+            <div class="card">
+                {% for item in won_items %}
+                    <article>
+                        <header class="card-header">
+                            <div class="row">
+                            <div class="col-sm-3">
+                                <h6>{{ _("Purchase date") }}</h5>
+                                <p>{{ item.winning_bid.created_at|dateformat }}</p>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <h6>{{ _("Item ID") }}</h5>
+                                <p class="text-truncate">{{ item.id }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <h6>{{ _("Seller") }}</h5>
+                                <p><a href="{{ url_for('auth.profile', email=item.seller.email) }}">{{ item.seller }}</a></p>
+                            </div>
+                        </header>
+                        <main class="card-body">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <img src="{{ item.image_url }}" class="img-fluid" alt="{{_("Product image for %(title)s", title=item.title)|e}}">
+                                </div>
+                                <div class="col-sm-6">
+                                    <h5>{{ item.title }}</h5>
+                                    <p>{{ item.description|truncate(1000) }}</p>
+                                </div>
+                                <div class="col-sm-1 text-nowrap ">
+                                    <h6>{{ _("Price") }}</h5>
+                                    <p>${{ item.winning_bid.amount|localcurrency }}</p>
+                                </div>
+                                <div class="col-sm-3 actions">
+                                    <form>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary border-dark btn-block">{{_("Pay")}}</button>
+                                        </div>
+                                        <div>
+                                            <a href="{{ url_for('items.view', id=item.id) }}" class="btn btn-outline btn-block">{{_("View item")}}</a>
+                                        </div>
+                                    </form>
+                            </div>
+                        </main>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+  </section>
+
   <div class="row">
     <div class="col-sm-3"></div>
     <div class="col-sm-6 auction-section">
