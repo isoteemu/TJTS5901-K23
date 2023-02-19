@@ -33,6 +33,15 @@
                             </select>
                         </div>
                     </div>
+                    {% if config['DEBUG'] %}
+                    <div class="form-group">
+                        <input name="flash-sale" type="checkbox" id="flash-sale">
+                        <label class="form-check-label" for="flash-sale">
+                        {{_("Flash sale!")}}
+                        </label>
+                    </div>
+                    {% endif %}
+
                     <div class="form-group">
                         <button class="btn btn-primary btn-block">{{ _("Add to listing") }}</button>
                     </div>

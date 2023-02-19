@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import logging
 from typing import Optional
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for, jsonify
+    Blueprint, flash, redirect, render_template, request, url_for, jsonify, current_app
 )
 from flask_babel import _, get_locale, lazy_gettext
 from werkzeug.exceptions import abort
@@ -188,13 +188,16 @@ def sell():
 
         if error is None:
             try:
+                sale_length = timedelta(days=1)
+                if current_app.config['DEBUG'] and request.form.get("flash-sale"):
+                    sale_length = timedelta(seconds=20)
+
                 item = Item(
                     title=title,
                     description=description,
                     starting_bid=starting_bid,
                     seller=current_user,
-                    closes_at=datetime.utcnow() + timedelta(days=1)
-
+                    closes_at=datetime.utcnow() + sale_length,
                 )
                 item.save()
                 flash(_('Item listed successfully!'))
