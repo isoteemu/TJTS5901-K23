@@ -1,5 +1,7 @@
 from datetime import datetime
 from secrets import token_urlsafe
+from flask import url_for
+from markupsafe import Markup
 
 from .db import db
 
@@ -42,6 +44,16 @@ class User(UserMixin, db.Document):
     "Whether the user is disabled."
 
     @property
+    def image_url(self) -> str:
+        """
+        Return the URL of the user's avatar.
+        """
+        import hashlib
+
+        digest = hashlib.md5(self.email.lower().encode("utf-8")).hexdigest()
+        return f"https://www.gravatar.com/avatar/{digest}?s=200"
+
+    @property
     def is_active(self) -> bool:
         """
         Return whether the user is active.
@@ -57,6 +69,15 @@ class User(UserMixin, db.Document):
         """
         return str(self.id)
 
+    def __html__(self) -> str:
+        """
+        Return a html representation of the user.
+        """
+
+        url = url_for("auth.profile", email=self.email)
+        username = self.email.split("@")[0]
+        safe_username = Markup.escape(username)
+        return f"<a href=\"{url}\" class=\"profile-link\">@{safe_username}</a>"
 
 
 class Item(db.Document):
