@@ -67,6 +67,10 @@ plugins:
       fallback_to_build_date: true
   - macros:
       module_name: macros
+      # Change to something else
+      j2_variable_start_string: "{j2{"
+      j2_variable_end_string: "}j2}"
+
 
 extra:
   social:
