@@ -4,11 +4,11 @@ This module contains the APScheduler extension.
 This extension is used to schedule background tasks.
 """
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
 
 from flask_apscheduler import APScheduler
-from mongoengine import signals
+from mongoengine import signals, Q
 
 from .models import Item
 from .items import handle_item_closing
@@ -32,6 +32,12 @@ def init_scheduler(app):
     # Add a signal handler to schedule a task to close the item when the auction
     # ends.
     signals.post_save.connect(_schedule_item_closing_task, sender=Item)
+
+    # Add a batch task to close expired bids every 15 minutes. This is to ensure
+    # that the bids are closed even if the server is restarted.
+    scheduler.add_job(trigger='interval', minutes=15,
+                      func=_close_items,
+                      id='close-items')
 
     with app.app_context():
         # Start the scheduler.
@@ -84,3 +90,33 @@ def _schedule_item_closing_task(sender, document, **kwargs):  # pylint: disable=
         run_date=document.closes_at + timedelta(seconds=1),
         id=f'close-item-{document.id}',
     )
+
+
+def _close_items():
+    """
+    Close expired bids.
+
+    This function is meant to be run by the APScheduler, and is not meant to be
+    called directly.
+    """
+    with scheduler.app.app_context():
+        logger.info("Running scheduled task 'close-items'")
+
+        # Get items that are past the closing date, and are not already closed
+        closes_before = datetime.utcnow() + timedelta(seconds=2)
+        items = Item.objects(Q(closed=None) | Q(closed=False), closes_at__lt=closes_before).all()
+        logger.debug("Closing %d items", len(items))
+
+        # Close each item
+        for item in items:
+            try:
+                # Make sure item is not already closed
+                if item.closed:
+                    continue
+
+                handle_item_closing(item)
+
+            except Exception as exc:
+                logger.error("Error closing items: %s", exc, exc_info=True, extra={
+                    'item_id': item.id,
+                })
