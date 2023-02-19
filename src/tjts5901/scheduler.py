@@ -30,27 +30,30 @@ def init_scheduler(app):
 
     scheduler.init_app(app)
 
-    # Add a signal handler to schedule a task to close the item when the auction
-    # ends.
-    signals.post_save.connect(_schedule_item_closing_task, sender=Item)
+    # Due to the scheduler being utilised as global variable, check if
+    # the scheduler is already running. If it is, then it means that the
+    # scheduler has already been initialised.
+    if not scheduler.running:
 
-    # Add a batch task to close expired bids every 15 minutes. This is to ensure
-    # that the bids are closed even if the server is restarted.
-    scheduler.add_job(trigger='interval', minutes=15,
-                      func=_close_items,
-                      id='close-items')
+        # Add a signal handler to schedule a task to close the item when the auction
+        # ends.
+        signals.post_save.connect(_schedule_item_closing_task, sender=Item)
 
-    # Add a task to update the currency rates from the European Central Bank every
-    # day at random time between 5:00 and 5:59.
-    scheduler.add_job(trigger='cron', hour=5, minute=randint(0, 59),
-                      func=_update_currency_rates,
-                      id='update-currency-rates')
+        # Add a batch task to close expired bids every 15 minutes. This is to ensure
+        # that the bids are closed even if the server is restarted.
+        scheduler.add_job(trigger='interval', minutes=15,
+                        func=_close_items,
+                        id='close-items')
 
-    with app.app_context():
-        # Start the scheduler.
-        scheduler.start()
-        logger.debug('APScheduler started')
+        # Add a task to update the currency rates from the European Central Bank every
+        # day at random time between 5:00 and 5:59.
+        scheduler.add_job(trigger='cron', hour=5, minute=randint(0, 59),
+                        func=_update_currency_rates,
+                        id='update-currency-rates')
 
+        with app.app_context():
+            scheduler.start()
+            logger.debug('APScheduler started')
 
     return app
 
