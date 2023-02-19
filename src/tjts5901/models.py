@@ -13,6 +13,8 @@ from mongoengine import (
     EnumField,
 )
 
+from mongoengine.queryset import CASCADE
+
 from flask_login import UserMixin
 from bson import ObjectId
 
@@ -136,7 +138,7 @@ class AccessToken(db.Document):
     name = StringField(max_length=100, required=True)
     "Human-readable name for the token."
 
-    user = ReferenceField(User, required=True)
+    user = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
     "User that the token is for."
 
     token = StringField(required=True, unique=True, default=token_urlsafe)
@@ -168,7 +170,7 @@ class Notification(db.Document):
 
     id: ObjectId
 
-    user = ReferenceField(User, required=True)
+    user = ReferenceField(User, required=True, reverse_delete_rule=CASCADE)
 
     category = StringField(max_length=100, default="message")
     message = StringField(required=True)
