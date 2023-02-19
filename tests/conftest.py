@@ -4,8 +4,8 @@ from flask import Flask
 from faker import Faker
 from werkzeug.security import generate_password_hash
 
-
-from tjts5901.app import create_app
+# Disable Flask debug mode for testing
+environ["FLASK_DEBUG"] = "0"
 
 
 def pytest_addoption(parser: pytest.Parser):
@@ -44,6 +44,9 @@ def app():
     >>> def test_mytest(app: Flask):
     >>>     ...
     """
+
+    from tjts5901.app import create_app
+
     flask_app = create_app({
         'TESTING': True,
         'DEBUG': False,
