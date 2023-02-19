@@ -1,17 +1,13 @@
-# Finnish (Finland) translations for TJTS5901-K23 Template.
-# Copyright (C) 2023 University of Jyväskylä
-# This file is distributed under the same license as the project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
-#
+
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version:  TJTS5901-K23\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-02-11 15:39+0000\n"
-"PO-Revision-Date: 2023-02-04 21:51+0000\n"
+"POT-Creation-Date: 2023-02-19 12:49+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: fi_FI\n"
-"Language-Team: fi_FI <LL@li.org>\n"
+"Language: fi\n"
+"Language-Team: fi <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -22,68 +18,100 @@ msgstr ""
 msgid "Hill Valley DMC dealership"
 msgstr "Hill Valley DMC -liike"
 
-#: src/tjts5901/app.py:74 tests/test_i18n.py:77 tests/test_i18n.py:101
+#: src/tjts5901/app.py:78 tests/test_i18n.py:79 tests/test_i18n.py:103
 msgid "Hello, World!"
 msgstr "Hei Maailma!"
 
-# python-format
-#: src/tjts5901/items.py:121
+#: src/tjts5901/auth.py:255
+msgid "Required field missing"
+msgstr "Pakollinen kenttä puuttuu"
+
+#: src/tjts5901/auth.py:258
+#, python-format
+msgid "Error creating token: %s"
+msgstr "Virhe luotaessa tunnistetta: %s"
+
+#: src/tjts5901/auth.py:260
+#, python-format
+msgid "Created token: %s"
+msgstr "Luotu tunniste: %s"
+
+#: src/tjts5901/items.py:187
 #, python-format
 msgid "Starting bid must be greater than %(amount)s."
 msgstr "Huudon tulee olla vähintään %(amount)s"
 
-#: src/tjts5901/items.py:134
+#: src/tjts5901/items.py:203
 msgid "Item listed successfully!"
-msgstr "Tuote poistettu onnistuneesti!"
+msgstr "Tuote lisätty onnistuneesti!"
 
-#: src/tjts5901/items.py:137
+#: src/tjts5901/items.py:206
 #, python-format
 msgid "Error creating item: %(exc)s"
 msgstr "Virhe luotaessa tuotetta: %(exc)s"
 
-#: src/tjts5901/items.py:176
+#: src/tjts5901/items.py:251
 msgid "Congratulations! You won the auction!"
 msgstr "Onnittelut! Voitit huutokaupan!"
 
-#: src/tjts5901/items.py:179
+#: src/tjts5901/items.py:253 src/tjts5901/items.py:423
+msgid "This item is no longer on sale."
+msgstr "Tämä tuote ei ole enää myynnissä"
+
+#: src/tjts5901/items.py:256
 msgid "This item is closing soon! Act now! Now! Now!"
 msgstr "Tämä tuote sulkeutuu pian! Toimi nyt! Heti! Nyt!"
 
-#: src/tjts5901/items.py:198
+#: src/tjts5901/items.py:275
 msgid "Title is required."
 msgstr "Otsikko on pakollinen."
 
-#: src/tjts5901/items.py:205
+#: src/tjts5901/items.py:282
 #, python-format
 msgid "Error updating item: %(exc)s"
 msgstr "Virhe päivitettäessä tuotetta: %(exc)s"
 
-#: src/tjts5901/items.py:210
+#: src/tjts5901/items.py:287
 msgid "Item updated successfully!"
 msgstr "Tuote päivitetty onnistuneesti!"
 
-#: src/tjts5901/items.py:229
+#: src/tjts5901/items.py:306
 #, python-format
 msgid "Error deleting item: %(exc)s"
 msgstr "Virhe poistaessa tuotetta: %(exc)s"
 
-#: src/tjts5901/items.py:231
+#: src/tjts5901/items.py:308
 msgid "Item deleted successfully!"
 msgstr "Tuote poistettu onnistuneesti!"
 
-#: src/tjts5901/items.py:257
+#: src/tjts5901/items.py:334 src/tjts5901/items.py:417
 #, python-format
 msgid "Bid must be at least %(min_amount)s"
 msgstr "Huudon tulee olla vähintään %(min_amount)s"
 
-#: src/tjts5901/items.py:274
+#: src/tjts5901/items.py:351 src/tjts5901/items.py:442
 #, python-format
 msgid "Error placing bid: %(exc)s"
 msgstr "Virhe asettaessa huutoa: %(exc)s"
 
-#: src/tjts5901/items.py:276
+#: src/tjts5901/items.py:353
 msgid "Bid placed successfully!"
 msgstr "Huuto asetettu onnistuneesti!"
+
+#: src/tjts5901/items.py:401
+#, python-format
+msgid "Missing required argument %(argname)s"
+msgstr "Tarvittava argumentti %(argname)s puuttuu"
+
+#: src/tjts5901/items.py:406
+#, python-format
+msgid "Invalid value for argument %(argname)s"
+msgstr "Virheellinen arvo argumentille %(argname)s"
+
+#: src/tjts5901/items.py:411
+#, python-format
+msgid "Error parsing argument %(argname)s: %(exc)s"
+msgstr "Virhe käsiteltäessä argumenttia %(argname)s: %(exc)s"
 
 #: src/tjts5901/templates/base.html:48
 msgid "Home"
@@ -116,6 +144,14 @@ msgstr "Kirjaudu sisään"
 #: src/tjts5901/templates/base.html:80
 msgid "Search"
 msgstr "Etsi"
+
+#: src/tjts5901/templates/base.html:103
+msgid "Message"
+msgstr "Viesti"
+
+#: src/tjts5901/templates/base.html:105
+msgid "Close"
+msgstr "Sulje"
 
 #: src/tjts5901/templates/auth/login.html:25
 msgid "Sign in to our platform"
@@ -159,6 +195,28 @@ msgstr "Ei vielä tunnuksia?"
 msgid "Create an account"
 msgstr "Luo tunnus"
 
+#: src/tjts5901/templates/auth/profile.html:37
+msgid "My items"
+msgstr ""
+
+#: src/tjts5901/templates/auth/profile.html:44
+msgid "Purchase date"
+msgstr ""
+
+#: src/tjts5901/templates/auth/profile.html:49
+msgid "Item ID"
+msgstr ""
+
+#: src/tjts5901/templates/auth/profile.html:53
+#: src/tjts5901/templates/items/index.html:34
+msgid "Seller"
+msgstr "Myyjä"
+
+#: src/tjts5901/templates/auth/profile.html:59
+#, python-format
+msgid "Product image for %(title)s"
+msgstr ""
+
 #: src/tjts5901/templates/auth/register.html:24
 msgid "Register on our platform"
 msgstr "Rekisteröidy palveluun"
@@ -188,6 +246,101 @@ msgstr "Onko sinulla jo tunnus?"
 msgid "Login here"
 msgstr "Kirjaudu tästä"
 
+#: src/tjts5901/templates/auth/tokens.html:11
+msgid "Personal Access Tokens"
+msgstr "Henkilökohtaiset poletit"
+
+#: src/tjts5901/templates/auth/tokens.html:13
+msgid ""
+"Personal access tokens allow third-party services to authenticate with "
+"our application on your behalf."
+msgstr ""
+"Henkilökohtaiset poletit mahdollistavat kolmannen osapuolen "
+"palveluidenautentikoinnin sovelluksen puolesta."
+
+#: src/tjts5901/templates/auth/tokens.html:19
+msgid "Your new personal access token"
+msgstr "Uusi henkilökohtainen poletti"
+
+#: src/tjts5901/templates/auth/tokens.html:21
+msgid ""
+"Your new personal access token is shown below. You may now use this token"
+" to make API requests."
+msgstr ""
+"Uusi henkilökohtainen poletti näkyy alla. Voit nyt käyttää tätä "
+"polettiaAPI-pyyntöihin."
+
+#: src/tjts5901/templates/auth/tokens.html:25
+msgid "Copy"
+msgstr "Kopioi"
+
+#: src/tjts5901/templates/auth/tokens.html:35
+msgid "Make sure to copy your new token now. You won't be able to see it again!"
+msgstr "Varmista, että kopioit uuden poletin. Et voi nähdä sitä uudelleen!"
+
+#: src/tjts5901/templates/auth/tokens.html:41
+#: src/tjts5901/templates/auth/tokens.html:54
+msgid "Create access token"
+msgstr "Luo poletti"
+
+#: src/tjts5901/templates/auth/tokens.html:45
+msgid "Name"
+msgstr "Nimi"
+
+#: src/tjts5901/templates/auth/tokens.html:46
+msgid " Enter token name"
+msgstr "Anna poletin nimi"
+
+#: src/tjts5901/templates/auth/tokens.html:47
+msgid ""
+"Give your token a descriptive name so you can easily identify it in the "
+"future."
+msgstr ""
+"Anna poletille kuvaava nimi, jotta voit helposti tunnistaa sen "
+"tulevaisuudessa."
+
+#: src/tjts5901/templates/auth/tokens.html:50
+msgid "Expires at"
+msgstr "Vanhenee"
+
+#: src/tjts5901/templates/auth/tokens.html:52
+msgid "Leave blank to never expire."
+msgstr "Jätä tyhjäksi, jos et halua poletin vanhentuman."
+
+#: src/tjts5901/templates/auth/tokens.html:64
+msgid "Active Access Tokens"
+msgstr "Aktiiviset poletit"
+
+#: src/tjts5901/templates/auth/tokens.html:68
+msgid "Token name"
+msgstr "Poletin nimi"
+
+#: src/tjts5901/templates/auth/tokens.html:69
+msgid "Created"
+msgstr "Luotu"
+
+#: src/tjts5901/templates/auth/tokens.html:70
+msgid "Last used"
+msgstr "Viimeksi käytetty"
+
+#: src/tjts5901/templates/auth/tokens.html:71
+msgid "Expires"
+msgstr "Vanhenee"
+
+#: src/tjts5901/templates/auth/tokens.html:72
+msgid "Actions"
+msgstr "Toiminnot"
+
+#: src/tjts5901/templates/auth/tokens.html:83
+#: src/tjts5901/templates/auth/tokens.html:89
+msgid "Never"
+msgstr "Ei koskaan"
+
+#: src/tjts5901/templates/auth/tokens.html:95
+#: src/tjts5901/templates/items/update.html:31
+msgid "Delete"
+msgstr "Poista"
+
 #: src/tjts5901/templates/items/index.html:20
 msgid "Items on sale"
 msgstr "Myynnissä olevat tuotteet"
@@ -209,10 +362,6 @@ msgstr "Kuvaus"
 msgid "Starting Bid"
 msgstr "Aloitushinta"
 
-#: src/tjts5901/templates/items/index.html:34
-msgid "Seller"
-msgstr "Myyjä"
-
 #: src/tjts5901/templates/items/index.html:35
 msgid "Created At"
 msgstr "Luotu"
@@ -233,7 +382,11 @@ msgstr "Lisää tuote"
 msgid "Currency"
 msgstr "Valuutta"
 
-#: src/tjts5901/templates/items/sell.html:37
+#: src/tjts5901/templates/items/sell.html:40
+msgid "Flash sale!"
+msgstr "Salamakauppa!"
+
+#: src/tjts5901/templates/items/sell.html:46
 msgid "Add to listing"
 msgstr "Lisää myyntiin"
 
@@ -248,10 +401,6 @@ msgstr "Päivitä myynti-ilmoitus"
 #: src/tjts5901/templates/items/update.html:31
 msgid "Are you sure?"
 msgstr "Oletko varma?"
-
-#: src/tjts5901/templates/items/update.html:31
-msgid "Delete"
-msgstr "Poista"
 
 #: src/tjts5901/templates/items/view.html:21
 #, python-format
@@ -283,34 +432,60 @@ msgstr "Vähimmäistarjous on %(min_bid)s"
 msgid "Bid"
 msgstr "Tarjoa"
 
-#: src/tjts5901/templates/items/view.html:73
-#, fuzzy
-msgid "Item is no longer at sale."
-msgstr "Myynnissä olevat tuotteet"
+#: src/tjts5901/templates/items/view.html:72
+msgid "Congratulations!"
+msgstr "Onnittelut!"
 
-#: src/tjts5901/templates/items/view.html:73
+#: src/tjts5901/templates/items/view.html:72
+msgid "You won the bid!"
+msgstr "Voitit huutokisan!"
+
+#: src/tjts5901/templates/items/view.html:80
+msgid "Final price"
+msgstr "Lopullinen hinta"
+
+#: src/tjts5901/templates/items/view.html:84
+#, python-format
+msgid "You won this item at %(closes_at)s"
+msgstr "Voitit tämän tuotteen %(closes_at)s"
+
+#: src/tjts5901/templates/items/view.html:90
+msgid "Pay"
+msgstr "Maksa"
+
+#: src/tjts5901/templates/items/view.html:97
+msgid "Item is no longer at sale."
+msgstr "Myynti on päättynyt."
+
+#: src/tjts5901/templates/items/view.html:97
 msgid "Next time, act faster!"
 msgstr "Jatkossa toimi nopeammin!"
 
-#: src/tjts5901/templates/items/view.html:81
+#: src/tjts5901/templates/items/view.html:105
 #, python-format
 msgid "%(icon)s Contact seller"
 msgstr "%(icon)s Ota yhteyttä myyjään"
 
-#: src/tjts5901/templates/items/view.html:82
+#: src/tjts5901/templates/items/view.html:106
 #, python-format
 msgid "%(icon)s Call seller"
 msgstr "%(icon)s Soita myyjälle"
 
-#: src/tjts5901/templates/items/view.html:97
+#: src/tjts5901/templates/items/view.html:121
 msgid "Elon-senpai notice me!"
 msgstr "Elon-senpai huomioi minut!"
 
-#: src/tjts5901/templates/items/view.html:101
+#: src/tjts5901/templates/items/view.html:125
 msgid "Zuckdaddy, you so alpha!"
 msgstr "Zuckdaddy, olet niin alpha!"
 
-#: src/tjts5901/templates/items/view.html:105
+#: src/tjts5901/templates/items/view.html:129
 msgid "Email to a friend"
 msgstr "Lähetä ystävälle"
+
+#~ msgid "Your item was not sold"
+#~ msgstr "Tuotetteesi ei käynyt kaupaksi"
+
+#~ msgid "Your item <a href=\"%(url)s\">%(title)s</a> was not sold."
+#~ msgstr "Tuotteesi <a href=\"%(url)s\">%(title)s</a> ei käynyt kaupaksi."
 
