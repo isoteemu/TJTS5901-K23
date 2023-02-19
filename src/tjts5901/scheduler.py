@@ -6,6 +6,7 @@ This extension is used to schedule background tasks.
 
 from datetime import datetime, timedelta
 import logging
+from random import randint
 
 from flask_apscheduler import APScheduler
 from mongoengine import signals, Q
@@ -38,6 +39,12 @@ def init_scheduler(app):
     scheduler.add_job(trigger='interval', minutes=15,
                       func=_close_items,
                       id='close-items')
+
+    # Add a task to update the currency rates from the European Central Bank every
+    # day at random time between 5:00 and 5:59.
+    scheduler.add_job(trigger='cron', hour=5, minute=randint(0, 59),
+                      func=_update_currency_rates,
+                      id='update-currency-rates')
 
     with app.app_context():
         # Start the scheduler.
@@ -120,3 +127,16 @@ def _close_items():
                 logger.error("Error closing items: %s", exc, exc_info=True, extra={
                     'item_id': item.id,
                 })
+
+
+def _update_currency_rates():
+    """
+    Update the currency rates from the European Central Bank.
+
+    This function is meant to be run by the APScheduler, and is not meant to be
+    called directly.
+    """
+    from .currency import fetch_currency_file
+    with scheduler.app.app_context():
+        logger.debug("Running scheduled task 'update-currency-rates'")
+        fetch_currency_file()
