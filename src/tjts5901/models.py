@@ -1,5 +1,6 @@
 from datetime import datetime
 from secrets import token_urlsafe
+from urllib.parse import urlencode
 from flask import url_for
 from markupsafe import Markup
 
@@ -51,7 +52,9 @@ class User(UserMixin, db.Document):
         import hashlib
 
         digest = hashlib.md5(self.email.lower().encode("utf-8")).hexdigest()
-        return f"https://www.gravatar.com/avatar/{digest}?s=200"
+        default = url_for("static", filename="img/default-profile.png", _external=True)
+        params = urlencode({"s": 200, "d": default})
+        return f"https://www.gravatar.com/avatar/{digest}?{params}"
 
     @property
     def is_active(self) -> bool:
