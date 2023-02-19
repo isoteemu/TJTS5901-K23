@@ -14,6 +14,10 @@ from flask import (
     session,
 )
 
+from werkzeug.datastructures import LanguageAccept
+
+from flask_login import current_user
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -42,6 +46,20 @@ class SupportedLocales(Enum):
     # "English (United States)"
 
 
+TIMEZONES = {
+    """
+    Timezones for supported locales.
+
+    The values are the timezone identifiers used by the Babel library.
+    This approach doesnt work for countries that have multiple timezones, like
+    the US.
+    """
+    "fi_FI": "Europe/Helsinki",
+    "sv_SE": "Europe/Stockholm",
+    "en_GB": "Europe/London",
+    "en_US": "America/New_York",
+}
+
 def init_babel(flask_app: Flask):
     """
     Initialize the Flask-Babel extension.
@@ -56,7 +74,7 @@ def init_babel(flask_app: Flask):
 
     # TODO: Set the default timezone from underlying OS.
 
-    babel = Babel(flask_app, locale_selector=get_locale)
+    babel = Babel(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
 
     # Register `locales` as jinja variable to be used in templates. Uses the
     # `Locale` class from the Babel library, so that the locale names can be
@@ -106,10 +124,9 @@ def get_locale():
         return locale
 
     # if a user is logged in, use the locale from the user settings
-    user = getattr(g, 'user', None)
-    if user is not None:
-        logger.debug("Using locale %s from user settings.", user.locale)
-        return user.locale
+    if current_user.is_authenticated and current_user.locale:
+        logger.debug("Using locale %s from user settings.", current_user.locale)
+        return current_user.locale
 
     # otherwise try to guess the language from the user accept header the
     # browser transmits.
@@ -136,3 +153,28 @@ def get_locale():
                  request.accept_languages, locale)
 
     return locale
+
+
+def get_timezone():
+    """
+    Get the timezone for user.
+
+    Looks at the user model for the user's preferred timezone. If the user has
+    not set a preferred timezone, use the default timezone.
+    """
+
+    # if a user is logged in, use the timezone from the user settings
+    if current_user.is_authenticated and current_user.timezone:
+        logger.debug("Using locale %s from user settings.", current_user.timezone)
+        return current_user.timezone
+
+    # Try detecting the timezone from the user's locale.
+    locale = get_locale()
+    choises = [(k, 1) for k in TIMEZONES.keys()]
+
+    # Use the best_match method from the LanguageAccept class to get the best
+    # match for the user's locale.
+    best_match = LanguageAccept(choises).best_match([locale])
+    if best_match:
+        logger.debug("Guessing timezone %s from locale %s.", TIMEZONES[best_match], locale)
+        return TIMEZONES[best_match]

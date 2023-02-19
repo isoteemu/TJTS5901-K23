@@ -39,6 +39,8 @@ class User(UserMixin, db.Document):
     currency = StringField(max_length=3)
     "The user's preferred currency."
 
+    timezone = StringField(max_length=50)
+
     created_at = DateTimeField(required=True, default=datetime.utcnow)
 
     is_disabled = BooleanField(default=False)
