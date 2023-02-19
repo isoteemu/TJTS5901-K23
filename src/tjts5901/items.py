@@ -4,7 +4,7 @@ from typing import Optional
 from flask import (
     Blueprint, flash, redirect, render_template, request, url_for, jsonify
 )
-from flask_babel import _, get_locale
+from flask_babel import _, get_locale, lazy_gettext
 from werkzeug.exceptions import abort
 
 from markupsafe import Markup
@@ -19,6 +19,7 @@ from .currency import (
     get_preferred_currency,
     REF_CURRENCY,
 )
+from .notification import send_notification
 
 bp = Blueprint('items', __name__)
 api = Blueprint('api_items', __name__, url_prefix='/api/items')
@@ -52,7 +53,16 @@ def get_winning_bid(item: Item) -> Optional[Bid]:
     """
 
     winning_bid = None
+
+    # If the item is closed, return the winning bid
+    if item.closed and item.winning_bid:
+        return item.winning_bid
+
+    # Sanity check: if the item is not closed, it should not have a winning bid
+    assert not item.closed or not (not item.closed and winning_bid), "Item is not closed, but has a winning bid"
+
     try:
+        # Get the highest bid that was placed before the item closed
         winning_bid = Bid.objects(item=item) \
             .filter(created_at__lt=item.closes_at) \
             .order_by('-amount') \
@@ -80,6 +90,61 @@ def get_item_price(item: Item) -> int:
         return winning_bid.amount + MIN_BID_INCREMENT
     else:
         return item.starting_bid
+
+
+def handle_item_closing(item):
+    """
+    Handle the closing of an item.
+
+    Checks if the item is not closed yet, but should be closed now. If so, 
+    closes the item, and send notifications to the seller and the buyer.
+
+    :param item: The item to handle.
+    """
+    # Handle the closing of an item
+    if not item.is_open and not item.closed:
+        logger.info("Closing item %r (%s)", item.title, item.id, extra={
+            'item_id': item.id,
+            'item_title': item.title,
+            'item_closes_at': item.closes_at,
+        })
+
+        # Get the winning bid
+        winning_bid = get_winning_bid(item)
+        if winning_bid:
+            item.winning_bid = winning_bid
+
+            # Send a notifications to the seller and the buyer
+            # lazy_gettext() is used to delay the translation until the message is sent
+            # Markup.escape() is used to escape strings, to prevent XSS attacks
+            send_notification(
+                item.seller,
+                title=lazy_gettext("Your item was sold"),
+                message=lazy_gettext("Your item <em>%(title)s</em> was sold to %(buyer)s for %(price)s.",
+                                     title=Markup.escape(item.title),
+                                     buyer=Markup.escape(winning_bid.bidder.email),
+                                     price=Markup.escape(winning_bid.amount)),
+            )
+            send_notification(
+                winning_bid.bidder,
+                title=lazy_gettext("You won an item"),
+                message=lazy_gettext("You won the item <em>%(title)s</em> for %(price)s.",
+                                     title=Markup.escape(item.title),
+                                     price=Markup.escape(winning_bid.amount)),
+            )
+
+        else:
+            # If there is no winning bid, send a notification to the seller
+            send_notification(
+                item.seller,
+                title=lazy_gettext("Your item was not sold"),
+                message=lazy_gettext("Your item <em>%(title)s</em> was not sold.",
+                                     title=Markup.escape(item.title)),
+            )
+
+        # Close the item
+        item.closed = True
+        item.save()
 
 
 @bp.route("/", defaults={'page': 1})
@@ -166,6 +231,11 @@ def view(id):
 
     item = Item.objects.get_or_404(id=id)
 
+    # !!! This is disabled as it might cause race conditions
+    # !!! if multiple users are accessing the same item at the same time
+    # Check if the item is closed, and handle it if so.
+    #handle_item_closing(item)
+
     # Set the minumum price for the bid form from the current winning bid
     winning_bid = get_winning_bid(item)
     min_bid = get_item_price(item)
@@ -173,8 +243,11 @@ def view(id):
     local_currency = get_preferred_currency()
     local_min_bid = convert_currency(min_bid, local_currency)
 
-    if item.closes_at < datetime.utcnow() and winning_bid.bidder == current_user:
-        flash(_("Congratulations! You won the auction!"))
+    if item.closes_at < datetime.utcnow():
+        if winning_bid and winning_bid.bidder == current_user:
+            flash(_("Congratulations! You won the auction!"), "success")
+        else:
+            flash(_("This item is no longer on sale."))
     elif item.closes_at < datetime.utcnow() + timedelta(hours=1):
         # Dark pattern to show enticing message to user
         flash(_("This item is closing soon! Act now! Now! Now!"))

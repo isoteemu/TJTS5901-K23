@@ -75,6 +75,9 @@ class Item(db.Document):
     starting_bid = IntField(required=True, min_value=0)
 
     seller = ReferenceField(User, required=True)
+    winning_bid = ReferenceField("Bid")
+    closed = BooleanField(default=False)
+    "Whether the item has been closed."
 
     created_at = DateTimeField(required=True, default=datetime.utcnow)
     closes_at = DateTimeField()
@@ -84,6 +87,8 @@ class Item(db.Document):
         """
         Return whether the item is open for bidding.
         """
+        if self.closed:
+            return False
         return self.closes_at > datetime.utcnow()
 
 
