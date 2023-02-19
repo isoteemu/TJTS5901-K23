@@ -6,7 +6,7 @@ function showMessage(message, category="message", created_at=Date.now()) {
     // Insert new toast
     const html = document.querySelector("#message-toast").content.cloneNode(true);
     html.classList += " " + category;
-    html.querySelector(".message").append(message);
+    html.querySelector(".message").innerHTML = message;
     html.querySelector("time.created-at").setAttribute("datetime", created_at);
     ago = moment(created_at).fromNow();
     html.querySelector("time.created-at").append(ago);
