@@ -11,6 +11,8 @@ flask-mongoengine==1.0
 
 CurrencyConverter
 
+Flask-APScheduler
+
 # Git hooks
 pre-commit
 

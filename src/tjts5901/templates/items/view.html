@@ -67,6 +67,30 @@
                                     </div>
                                 </div>
                             </form>
+                        {% elif item.closed and item.winning_bid.bidder == current_user %}
+                            <div class="alert alert-success">
+                                <strong>{{_("Congratulations!")}}</strong> {{ _("You won the bid!")}}
+                            </div>
+                            <form action="#" method="post">
+                                <input type="hidden" name="id" value="{{ item.id }}">
+                                
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="">
+                                            <h5 class="lead">{{_("Final price")}}</h5>
+                                            <p class="h4">{{ item.winning_bid.amount|localcurrency }}</p>
+                                            <div>
+                                                <small class="form-text text-muted">
+                                                    {{ _("You won this item at %(closes_at)s", closes_at=item.winning_bid.created_at|datetimeformat) }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="submit" class="btn btn-info btn-lg btn-block border-dark">{{_("Pay")}}</button>
+                                    </div>
+                                </div>
+                            </form>
 
                         {% else %}
                             <div class="alert alert-info">

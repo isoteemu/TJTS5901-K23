@@ -12,6 +12,7 @@ To update the currency conversion rates, run the following command:
 
 from decimal import Decimal
 import logging
+import os
 from pathlib import Path
 from zipfile import ZipFile
 import urllib.request
@@ -215,11 +216,34 @@ def update_currency_rates():
     :return: None
     """
     click.echo('Updating currency file from the European Central Bank...')
+    fetch_currency_file()
+    click.echo('Done.')
+
+
+def fetch_currency_file():
+    """
+    Fetch the currency file from the European Central Bank.
+
+    This function fetches the currency file from the European Central Bank, and
+    stores it in the configured currency file path.
+    """
+
+    from tempfile import NamedTemporaryFile  # pylint: disable=import-outside-toplevel
 
     fd, _ = urllib.request.urlretrieve(SINGLE_DAY_ECB_URL)
     with ZipFile(fd) as zf:
         file_name = zf.namelist().pop()
-        with open(current_app.config['CURRENCY_FILE'], 'wb') as f:
-            f.write(zf.read(file_name))
 
-    click.echo('Done.')
+        # Create a temporary file to store the currency file, to avoid corrupting
+        # the existing file if the download fails, or while writing the file.
+
+        file_path = os.path.dirname(current_app.config['CURRENCY_FILE'])
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+
+        with NamedTemporaryFile(dir=file_path, delete=False) as f:
+            f.write(zf.read(file_name))
+            f.flush()
+
+            # Move the temporary file to the configured currency file path
+            os.rename(f.name, current_app.config['CURRENCY_FILE'])
