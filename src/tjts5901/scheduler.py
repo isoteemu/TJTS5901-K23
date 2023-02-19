@@ -33,7 +33,7 @@ def init_scheduler(app):
     # Due to the scheduler being utilised as global variable, check if
     # the scheduler is already running. If it is, then it means that the
     # scheduler has already been initialised.
-    if not scheduler.running:
+    if not scheduler.running and not app.config.get('TESTING'):
 
         # Add a signal handler to schedule a task to close the item when the auction
         # ends.
