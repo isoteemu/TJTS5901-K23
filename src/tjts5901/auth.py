@@ -13,6 +13,7 @@ from flask_login import (
     current_user,
 )
 from flask_babel import _
+from babel.dates import get_timezone
 from werkzeug.security import check_password_hash, generate_password_hash
 from sentry_sdk import set_user
 
@@ -131,11 +132,21 @@ def register():
         elif not terms:
             error = 'You must agree to the terms.'
 
+        timezone = None
+        try:
+            if user_tz := request.form.get('timezone', None):
+                timezone = get_timezone(user_tz).zone
+
+        except Exception as exc:
+            logger.debug("Error getting timezone from user data: %s", exc)
+            timezone = None
+
         if error is None:
             try:
                 user = User(
                     email=email,
-                    password=generate_password_hash(password)
+                    password=generate_password_hash(password),
+                    timezone=timezone,
                 )
                 user.save()
                 flash("You have been registered. Please log in.")

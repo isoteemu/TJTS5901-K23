@@ -27,6 +27,15 @@
           <div class="card-body">
             <form action="{{ url_for('auth.register') }}" method="POST" class="mt-4">
 
+              <input type="hidden" name="timezone" id="timezone">
+              <script>
+                function getTimezone() {
+                  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+                  document.getElementById('timezone').value = tz;
+                }
+                getTimezone();
+              </script>
+
               <div class="form-group">
                 <label for="email" class="mb-2">{{ _("Email") }}</label>
                 <input name="email" id="email" type="email" class="form-control" placeholder="Your email" required="">
