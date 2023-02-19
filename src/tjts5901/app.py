@@ -64,6 +64,10 @@ def create_app(config: Optional[Dict] = None) -> Flask:
     # Initialize the database connection.
     init_db(flask_app)
 
+    # Initialize the scheduler.
+    from .scheduler import init_scheduler  # pylint: disable=import-outside-toplevel
+    init_scheduler(flask_app)
+
     @flask_app.route('/debug-sentry')
     def trigger_error():
         division_by_zero = 1 / 0
@@ -96,7 +100,6 @@ load_dotenv()
 
 # Create the Flask application.
 flask_app = create_app()
-
 
 @flask_app.route("/server-info")
 def server_info() -> Response:
