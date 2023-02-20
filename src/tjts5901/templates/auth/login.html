@@ -23,11 +23,33 @@
                 <h5>Testing?</h5>
                 <hr />
                 <p class="lead">
+                    <style>
+                        @keyframes eighty-eight-mph {
+                            0% {
+                                margin-right: -90%;
+                            }
+                            100% {
+                                margin-right: 90%;
+                            }
+                        }
+                        #test-login::after {
+                            content: "🚗";
+                            font-size: 2em;
+                            margin-right: -90%;
+                            right: 0;
+                            animation-duration: 2s;
+                        }
+                        #test-login:active::after,
+                        #test-login:focus::after {
+                            animation-name: eighty-eight-mph;
+                            margin-right: 90%;
+                        }
+                    </style>
                     Use <code class="bg-white lead">doc@ebrownindustries.org</code> and <code class="bg-white lead">greatscott</code> to log in with account that has performed purchases and sales.
                     <form action="{{ url_for('auth.login') }}" class="mt-4" method="POST">
                         <input type="hidden" name="email" value="doc@ebrownindustries.org">
                         <input type="hidden" name="password" value="greatscott">
-                        <button type="submit" class="btn btn-block btn-primary">{{_("Login")}}</button>
+                        <button id="test-login" type="submit" class="btn btn-block btn-primary" title="It's back to the future reference, not nazi reference. Fucking nazis.">Hit 88 mph</button>
                     </form>
                 </p>
             </div>
