@@ -168,6 +168,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
+        user = None
         error = None
         try:
             user = User.objects.get(email=email)
