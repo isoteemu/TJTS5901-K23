@@ -20,13 +20,21 @@
                 <div class="card-body">
                     <div class="form-group d-flex align-items-center justify-content-between">
                         <label for="default" class="mr-3">Email:</label>
-                        <input id="default" type="text" class="form-control w-75" value="{{ user.email }}">
+                        <input id="default" type="text" class="form-control w-75" value="{{ user.email }}" readonly>
                     </div>
                 </div>
                 <div class="card-footer">
                     {% if current_user == user %}
-                    <a href="{{ url_for('items.sell') }}" class="btn btn-primary">Sell an Item</a>
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+                    <div class="btn-group" role="group">
+                        <ahref="{{ url_for('items.sell') }}" class="btn btn-primary">{{ _("Sell an Item") }}</a>
+                    </div>
+                    <div class="btn-group" role="group">
+                        {# Notice: I have omited the email -attribute here, and made "me" as default in auth.py for tokens page. #}
+                        <a href="{{ url_for('auth.user_access_tokens') }}" class="btn btn-primary">{{ _("Tokens") }}</a>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">{{ _("Logout") }} </a>
+                    </div>
                     {% endif %}
                 </div>
             </div>

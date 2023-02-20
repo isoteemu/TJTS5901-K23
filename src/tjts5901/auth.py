@@ -237,7 +237,7 @@ def profile(email):
     return render_template('auth/profile.html', user=user, items=items, won_items=won_items)
 
 
-@bp.route('/profile/<email>/token', methods=('GET', 'POST'))
+@bp.route('/profile/<email>/token', methods=('GET', 'POST'), defaults={'email': 'me'})
 @login_required
 def user_access_tokens(email):
     """
