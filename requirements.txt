@@ -21,4 +21,4 @@ sentry-sdk[flask]
 sentry-sdk[pymongo]
 
 # More production-ready web server
-#gunicorn
+gunicorn

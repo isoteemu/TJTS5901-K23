@@ -21,7 +21,7 @@ WORKDIR /app
 
 ## Declare default flask app as environment variable
 ## https://flask.palletsprojects.com/en/2.2.x/cli/
-ARG FLASK_APP=tjts5901.app
+ARG FLASK_APP=tjts5901.app:flask_app
 ENV FLASK_APP=${FLASK_APP}
 
 ## Setup the default port for flask to listen on
@@ -31,13 +31,13 @@ ENV FLASK_RUN_PORT=${FLASK_RUN_PORT}
 ## Run Flask app when container started, and listen all the interfaces
 ## Note: CMD doesn't run command in build, but defines an starting command
 ## when container is started (or arguments for ENTRYPOINT).
-CMD flask run --host=0.0.0.0 # --port=${FLASK_RUN_PORT} --app=${FLASK_APP}
+#CMD flask run --host=0.0.0.0 # --port=${FLASK_RUN_PORT} --app=${FLASK_APP}
+CMD gunicorn --bind "0.0.0.0:${FLASK_RUN_PORT}" "${FLASK_APP}"
 
 ## Examples for other commands:
 ## Run nothing, so that the container can be used as a base image
 #CMD ["bash", "-c", "sleep infinity"]
 ## Run Flask app using Gunicorn, which unlike Flask, doesn't complain about being development thing.
-#CMD gunicorn --bind "0.0.0.0:${PORT}"" tjts5901.app:app
 
 ## Install requirements using pip. This is done before copying the app, so that
 ## requirements layer is cached. This way, if app code changes, only app code is
