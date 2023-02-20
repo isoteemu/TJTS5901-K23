@@ -83,12 +83,24 @@ def faker_session_locale(app: Flask):
     """
     Fixture to set faker locale.
 
+    Compares the available locales in the application with the locales
+    available in faker. If there is a match, the locale is set to the
+    application locale.
+
     This fixture is autouse, so it will be applied to all tests.
     """
+
+    from faker.config import AVAILABLE_LOCALES, DEFAULT_LOCALE
+
     languages = []
     with app.app_context():
         for locale in app.extensions['babel'].instance.list_translations():
-            languages.append(str(locale))
+            locale_code = str(locale)
+            if locale_code in AVAILABLE_LOCALES:
+                languages.append(locale_code)
+
+    if len(languages) == 0:
+        languages = [DEFAULT_LOCALE]
 
     return languages
 

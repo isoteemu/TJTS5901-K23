@@ -1,4 +1,9 @@
 /** Add style here **/
+@font-face {
+    font-family: "Klingon";
+    src: url("fonts/klingon.ttf");
+}
+
 #locale-selector a {
     background-repeat: no-repeat;
     background-position: 2px 50%;
@@ -15,4 +20,11 @@
 }
 #locale-selector a[href$="locale=sv_SE"] {
     background-image: url('flags/sv_SE.png');
+}
+#locale-selector a[href$="locale=tlh"] {
+    background-image: url('flags/tlh.png');
+}
+
+html[lang="tlh"] *, *[lang="tlh"] {
+    font-family: "Klingon", sans-serif !important;
 }
