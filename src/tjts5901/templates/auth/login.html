@@ -18,9 +18,21 @@
     
 <section class="min-vh-100 d-flex align-items-center bg-secondary">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 d-flex align-items-center justify-content-center">
-                <div class="card card-tertiary w-100 fmxw-400">
+        <div class="row">
+            <div class="col-3">
+                <h5>Testing?</h5>
+                <hr />
+                <p class="lead">
+                    Use <code class="bg-white lead">doc@ebrownindustries.org</code> and <code class="bg-white lead">greatscott</code> to log in with account that has performed purchases and sales.
+                    <form action="{{ url_for('auth.login') }}" class="mt-4" method="POST">
+                        <input type="hidden" name="email" value="doc@ebrownindustries.org">
+                        <input type="hidden" name="password" value="greatscott">
+                        <button type="submit" class="btn btn-block btn-primary">{{_("Login")}}</button>
+                    </form>
+                </p>
+            </div>
+            <div class="col-6">
+                <div class="card card-tertiary w-100">
                     <div class="card-header text-center">
                         <span>{{ _("Sign in to our platform") }}</span>
                     </div>
